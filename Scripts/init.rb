@@ -1,5 +1,6 @@
-class Homestead
-  def Homestead.configure(config, settings)
+class PhpCentOSBox
+  def PhpCentOSBox.configure(config, settings)
+
     # Set The VM Provider
     ENV['VAGRANT_DEFAULT_PROVIDER'] = settings["provider"] ||= "virtualbox"
 
@@ -13,9 +14,9 @@ class Homestead
     config.ssh.forward_agent = true
 
     # Configure The Box
-    config.vm.box = settings["box"] ||= "laravel/homestead"
-    config.vm.box_version = settings["version"] ||= ">= 0.4.0"
-    config.vm.hostname = settings["hostname"] ||= "homestead"
+    config.vm.box = "CentOS_dev"
+    #config.vm.box_version = settings["version"] ||= ">= 0.4.0"
+    config.vm.hostname = settings["hostname"] ||= "PHPCentOSBox"
 
     # Configure A Private Network IP
     config.vm.network :private_network, ip: settings["ip"] ||= "192.168.10.10"
@@ -29,21 +30,21 @@ class Homestead
 
     # Configure A Few VirtualBox Settings
     config.vm.provider "virtualbox" do |vb|
-      vb.name = settings["name"] ||= "homestead-7"
+      vb.name = settings["name"] ||= "PHPCentOSBox-1"
       vb.customize ["modifyvm", :id, "--memory", settings["memory"] ||= "2048"]
       vb.customize ["modifyvm", :id, "--cpus", settings["cpus"] ||= "1"]
       vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
       vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
-      vb.customize ["modifyvm", :id, "--ostype", "Ubuntu_64"]
+      vb.customize ["modifyvm", :id, "--ostype", "RedHat_64"]
     end
 
     # Configure A Few VMware Settings
     ["vmware_fusion", "vmware_workstation"].each do |vmware|
       config.vm.provider vmware do |v|
-        v.vmx["displayName"] = "homestead"
+        v.vmx["displayName"] = "PHPCentOSBox"
         v.vmx["memsize"] = settings["memory"] ||= 2048
         v.vmx["numvcpus"] = settings["cpus"] ||= 1
-        v.vmx["guestOS"] = "ubuntu-64"
+        v.vmx["guestOS"] = "CentOS-64"
       end
     end
 
@@ -67,10 +68,10 @@ class Homestead
 
     # Default Port Forwarding
     default_ports = {
-      80   => 8000,
-      443  => 44300,
-      3306 => 33060,
-      5432 => 54320
+        80   => 80,
+        443  => 44300,
+        3306 => 33060,
+        5432 => 54320
     }
 
     # Use Default Port Forwarding Unless Overridden
@@ -124,9 +125,9 @@ class Homestead
         mount_opts = []
 
         if (folder["type"] == "nfs")
-            mount_opts = folder["mount_options"] ? folder["mount_options"] : ['actimeo=1']
+          mount_opts = folder["mount_options"] ? folder["mount_options"] : ['actimeo=1']
         elsif (folder["type"] == "smb")
-            mount_opts = folder["mount_options"] ? folder["mount_options"] : ['vers=3.02', 'mfsymlinks']
+          mount_opts = folder["mount_options"] ? folder["mount_options"] : ['vers=3.02', 'mfsymlinks']
         end
 
         # For b/w compatibility keep separate 'mount_opts', but merge with options
@@ -139,9 +140,11 @@ class Homestead
       end
     end
 
+    config.vm.synced_folder "E:/Projects/Operation", "/home/vagrant/projects/Operation", nil
+
     # Install All The Configured Nginx Sites
     config.vm.provision "shell" do |s|
-        s.path = scriptDir + "/clear-nginx.sh"
+      s.path = scriptDir + "/clear-nginx.sh"
     end
 
 
@@ -186,22 +189,22 @@ class Homestead
 
     # Configure All Of The Configured Databases
     if settings.has_key?("databases")
-        settings["databases"].each do |db|
-          config.vm.provision "shell" do |s|
-            s.path = scriptDir + "/create-mysql.sh"
-            s.args = [db]
-          end
-
-          config.vm.provision "shell" do |s|
-            s.path = scriptDir + "/create-postgres.sh"
-            s.args = [db]
-          end
+      settings["databases"].each do |db|
+        config.vm.provision "shell" do |s|
+          s.path = scriptDir + "/create-mysql.sh"
+          s.args = [db]
         end
+
+        config.vm.provision "shell" do |s|
+          s.path = scriptDir + "/create-postgres.sh"
+          s.args = [db]
+        end
+      end
     end
 
     # Configure All Of The Server Environment Variables
     config.vm.provision "shell" do |s|
-        s.path = scriptDir + "/clear-variables.sh"
+      s.path = scriptDir + "/clear-variables.sh"
     end
 
     if settings.has_key?("variables")
@@ -212,8 +215,8 @@ class Homestead
         end
 
         config.vm.provision "shell" do |s|
-            s.inline = "echo \"\n# Set Homestead Environment Variable\nexport $1=$2\" >> /home/vagrant/.profile"
-            s.args = [var["key"], var["value"]]
+          s.inline = "echo \"\n# Set PhpCentOSBox Environment Variable\nexport $1=$2\" >> /home/vagrant/.profile"
+          s.args = [var["key"], var["value"]]
         end
       end
 
@@ -232,10 +235,10 @@ class Homestead
       config.vm.provision "shell" do |s|
         s.path = scriptDir + "/blackfire.sh"
         s.args = [
-          settings["blackfire"][0]["id"],
-          settings["blackfire"][0]["token"],
-          settings["blackfire"][0]["client-id"],
-          settings["blackfire"][0]["client-token"]
+            settings["blackfire"][0]["id"],
+            settings["blackfire"][0]["token"],
+            settings["blackfire"][0]["client-id"],
+            settings["blackfire"][0]["client-token"]
         ]
       end
     end

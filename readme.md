@@ -1,5 +1,3 @@
-# Laravel Homestead
+#CentOS-Box-Config
 
-The official Laravel local development environment.
-
-Official documentation [is located here](http://laravel.com/docs/homestead).
+This a php environment for developers. based on centos & laravel/homestead

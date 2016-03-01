@@ -25,7 +25,10 @@ block="server {
     charset utf-8;
 
     location / {
-        try_files \$uri \$uri/ /index.php?\$query_string;
+        if (!-e \$request_filename) {
+            rewrite  ^(.*)$  /index.php?s=\$1  last;
+            break;
+        }
     }
 
     location = /favicon.ico { access_log off; log_not_found off; }
@@ -64,7 +67,6 @@ block="server {
 }
 "
 
-echo "$block" > "/etc/nginx/sites-available/$1"
-ln -fs "/etc/nginx/sites-available/$1" "/etc/nginx/sites-enabled/$1"
-sudo systemctl restart nginx.service
-sudo systemctl restart php-fpm.service
+echo "$block" > "/etc/nginx/sites/$1"
+systemctl restart nginx.service
+systemctl restart php-fpm.service
