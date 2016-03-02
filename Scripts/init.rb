@@ -14,7 +14,7 @@ class PhpCentOSBox
     config.ssh.forward_agent = true
 
     # Configure The Box
-    config.vm.box = "CentOS_dev"
+    config.vm.box = "Jason-chang/php-centos-box"
     #config.vm.box_version = settings["version"] ||= ">= 0.4.0"
     config.vm.hostname = settings["hostname"] ||= "PHPCentOSBox"
 
@@ -44,7 +44,7 @@ class PhpCentOSBox
         v.vmx["displayName"] = "PHPCentOSBox"
         v.vmx["memsize"] = settings["memory"] ||= 2048
         v.vmx["numvcpus"] = settings["cpus"] ||= 1
-        v.vmx["guestOS"] = "CentOS-64"
+        v.vmx["guestOS"] = "centos-64"
       end
     end
 
