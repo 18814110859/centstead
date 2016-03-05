@@ -14,7 +14,7 @@ class PhpCentOSBox
     config.ssh.forward_agent = true
 
     # Configure The Box
-    config.vm.box = "Jason-chang/php-centos-box"
+    config.vm.box = "jason-chang/php-centos-box"
     #config.vm.box_version = settings["version"] ||= ">= 0.4.0"
     config.vm.hostname = settings["hostname"] ||= "PHPCentOSBox"
 
