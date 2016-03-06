@@ -1,12 +1,12 @@
 @echo off
 
-set homesteadRoot=%HOMEDRIVE%%HOMEPATH%\.homestead
+set UserConfigPath=config
 
-mkdir "%homesteadRoot%"
+mkdir %UserConfigPath%
 
-copy /-y src\stubs\Homestead.yaml "%homesteadRoot%\Homestead.yaml"
-copy /-y src\stubs\after.sh "%homesteadRoot%\after.sh"
-copy /-y src\stubs\aliases "%homesteadRoot%\aliases"
+copy /-y src\stubs\Homestead.yaml "%UserConfigPath%\config.yaml"
+copy /-y src\stubs\after.sh "%UserConfigPath%\after.sh"
+copy /-y src\stubs\aliases "%UserConfigPath%\aliases"
 
-set homesteadRoot=
+set UserConfigPath=
 echo Homestead initialized!

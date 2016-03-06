@@ -6,10 +6,10 @@ openssl req -new -key /etc/nginx/ssl/$1.key -out /etc/nginx/ssl/$1.csr -subj "/C
 openssl x509 -req -days 365 -in /etc/nginx/ssl/$1.csr -signkey /etc/nginx/ssl/$1.key -out /etc/nginx/ssl/$1.crt 2>/dev/null
 
 block="server {
-    listen ${3:-80};
-    listen ${4:-443} ssl;
-    server_name $1;
-    root \"$2\";
+    listen ${4:-80};
+    listen ${5:-443} ssl;
+    server_name $2;
+    root \"$3\";
 
     index index.html index.htm index.php app_dev.php;
 
@@ -63,7 +63,6 @@ block="server {
 }
 "
 
-echo "$block" > "/etc/nginx/sites-available/$1"
-
+echo "$block" > "/etc/nginx/sites/$1"
 sudo systemctl restart nginx.service
 sudo systemctl restart php-fpm.service

@@ -140,8 +140,6 @@ class PhpCentOSBox
       end
     end
 
-    config.vm.synced_folder "E:/Projects/Operation", "/home/vagrant/projects/Operation", nil
-
     # Install All The Configured Nginx Sites
     config.vm.provision "shell" do |s|
       s.path = scriptDir + "/clear-nginx.sh"
@@ -159,9 +157,11 @@ class PhpCentOSBox
         type = "symfony2"
       end
 
+      conf = site["conf"] ||= site["map"]
+
       config.vm.provision "shell" do |s|
         s.path = scriptDir + "/serve-#{type}.sh"
-        s.args = [site["map"], site["to"], site["port"] ||= "80", site["ssl"] ||= "443"]
+        s.args = [conf, site["map"], site["to"], site["port"] ||= "80", site["ssl"] ||= "443"]
       end
 
       # Configure The Cron Schedule
@@ -241,6 +241,10 @@ class PhpCentOSBox
             settings["blackfire"][0]["client-token"]
         ]
       end
+    end
+
+    config.push.define "atlas" do |push|
+      push.app = "jason-chang/php-centos-box"
     end
   end
 end

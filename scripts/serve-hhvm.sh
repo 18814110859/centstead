@@ -15,10 +15,10 @@ then
 fi
 
 block="server {
-    listen ${3:-80};
-    listen ${4:-443} ssl;
-    server_name $1;
-    root \"$2\";
+    listen ${4:-80};
+    listen ${5:-443} ssl;
+    server_name $2;
+    root \"$3\";
 
     index index.html index.htm index.php;
 
@@ -62,8 +62,7 @@ block="server {
 }
 "
 
-echo "$block" > "/etc/nginx/sites-available/$1"
-ln -fs "/etc/nginx/sites-available/$1" "/etc/nginx/sites-enabled/$1"
+echo "$block" > "/etc/nginx/sites/$1"
 sudo systemctl restart nginx.service
 sudo systemctl restart php-fpm.service
 sudo systemctl restart hhvm.service
