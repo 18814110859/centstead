@@ -242,9 +242,5 @@ class PhpCentOSBox
         ]
       end
     end
-
-    config.push.define "atlas" do |push|
-      push.app = "jason-chang/php-centos-box"
-    end
   end
 end
