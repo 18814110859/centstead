@@ -2,12 +2,15 @@ class PhpCentOSBox
   def PhpCentOSBox.configure(config, settings)
 
     # Set The VM Provider
+    # 设置 虚拟机 软件
     ENV['VAGRANT_DEFAULT_PROVIDER'] = settings["provider"] ||= "virtualbox"
 
     # Configure Local Variable To Access Scripts From Remote Location
+    # 设置脚本位置变量
     scriptDir = File.dirname(__FILE__)
 
     # Prevent TTY Errors
+    #
     config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
 
     # Allow SSH Agent Forward from The Box
@@ -141,6 +144,7 @@ class PhpCentOSBox
     end
 
     # Install All The Configured Nginx Sites
+    # 配置 nginx 域名网站
     config.vm.provision "shell" do |s|
       s.path = scriptDir + "/clear-nginx.sh"
     end
@@ -241,10 +245,6 @@ class PhpCentOSBox
             settings["blackfire"][0]["client-token"]
         ]
       end
-    end
-
-    config.push.define "atlas" do |push|
-      push.app = "jason-chang/php-centos-box"
     end
   end
 end
