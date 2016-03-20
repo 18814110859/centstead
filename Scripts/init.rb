@@ -146,41 +146,49 @@ class PhpCentOSBox
     # Install All The Configured Nginx Sites
     # 配置 nginx 域名网站
     config.vm.provision "shell" do |s|
-      s.path = scriptDir + "/clear-nginx.sh"
+      s.path = scriptDir + "/clear-sites.sh"
     end
 
 
     settings["sites"].each do |site|
-      type = site["type"] ||= "laravel"
 
-      if (site.has_key?("hhvm") && site["hhvm"])
-        type = "hhvm"
-      end
+      conf = site["conf"]
 
-      if (type == "symfony")
-        type = "symfony2"
-      end
+      site["servers"].each do |server|
 
-      conf = site["conf"] ||= site["map"]
+        type = server["type"] ||= "laravel"
 
-      config.vm.provision "shell" do |s|
-        s.path = scriptDir + "/serve-#{type}.sh"
-        s.args = [conf, site["map"], site["to"], site["port"] ||= "80", site["ssl"] ||= "443"]
-      end
+        if (server.has_key?("hhvm") && server["hhvm"])
+          type = "hhvm"
+        end
 
-      # Configure The Cron Schedule
-      if (site.has_key?("schedule"))
+        if (type == "symfony")
+          type = "symfony2"
+        end
+
         config.vm.provision "shell" do |s|
-          if (site["schedule"])
-            s.path = scriptDir + "/cron-schedule.sh"
-            s.args = [site["map"].tr('^A-Za-z0-9', ''), site["to"]]
-          else
-            s.inline = "rm -f /etc/cron.d/$1"
-            s.args = [site["map"].tr('^A-Za-z0-9', '')]
+          s.path = scriptDir + "/serve-#{type}.sh"
+          s.args = [conf, server["map"], server["to"], server["port"] ||= "80", server["ssl"] ||= "443"]
+        end
+
+        # Configure The Cron Schedule
+        if (server.has_key?("schedule"))
+          config.vm.provision "shell" do |s|
+            if (server["schedule"])
+              s.path = scriptDir + "/cron-schedule.sh"
+              s.args = [server["map"].tr('^A-Za-z0-9', ''), server["to"]]
+            else
+              s.inline = "rm -f /etc/cron.d/$1"
+              s.args = [server["map"].tr('^A-Za-z0-9', '')]
+            end
           end
         end
-      end
 
+      end
+    end
+
+    config.vm.provision "shell" do |s|
+      s.path = scriptDir + "/reload-sites.sh"
     end
 
     # Install MariaDB If Necessary

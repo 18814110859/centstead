@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
 
-mkdir /etc/nginx/ssl 2>/dev/null
-openssl genrsa -out "/etc/nginx/ssl/$1.key" 2048 2>/dev/null
-openssl req -new -key /etc/nginx/ssl/$1.key -out /etc/nginx/ssl/$1.csr -subj "/CN=$1/O=Vagrant/C=UK" 2>/dev/null
-openssl x509 -req -days 365 -in /etc/nginx/ssl/$1.csr -signkey /etc/nginx/ssl/$1.key -out /etc/nginx/ssl/$1.crt 2>/dev/null
-
 block="server {
     listen ${4:-80};
     listen ${5:-443} ssl;
@@ -37,8 +32,13 @@ block="server {
         fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
 
         fastcgi_intercept_errors off;
-        fastcgi_buffer_size 16k;
-        fastcgi_buffers 4 16k;
+        fastcgi_buffer_size 64k;
+        fastcgi_buffers 4 64k;
+        fastcgi_busy_buffers_size 128k;
+        fastcgi_temp_file_write_size 128k;
+        fastcgi_connect_timeout 300;
+        fastcgi_send_timeout 300;
+        fastcgi_read_timeout 300;
     }
 
     # PROD
@@ -49,9 +49,13 @@ block="server {
         fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
 
         fastcgi_intercept_errors off;
-        fastcgi_buffer_size 16k;
-        fastcgi_buffers 4 16k;
-        internal;
+        fastcgi_buffer_size 64k;
+        fastcgi_buffers 4 64k;
+        fastcgi_busy_buffers_size 128k;
+        fastcgi_temp_file_write_size 128k;
+        fastcgi_connect_timeout 300;
+        fastcgi_send_timeout 300;
+        fastcgi_read_timeout 300;
     }
 
     location ~ /\.ht {
@@ -64,5 +68,3 @@ block="server {
 "
 
 echo "$block" > "/etc/nginx/sites/$1"
-sudo systemctl restart nginx.service
-sudo systemctl restart php-fpm.service
