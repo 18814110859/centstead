@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-homesteadRoot=~/.homestead
+UserConfigPath=~/.homestead
 
-mkdir -p "$homesteadRoot"
+mkdir -p "$UserConfigPath"
 
-cp -i src/stubs/Homestead.yaml "$homesteadRoot/Homestead.yaml"
-cp -i src/stubs/after.sh "$homesteadRoot/after.sh"
-cp -i src/stubs/aliases "$homesteadRoot/aliases"
+cp -i src/stubs/config.yaml "$UserConfigPath/config.yaml"
+cp -i src/stubs/after.sh "$UserConfigPath/after.sh"
+cp -i src/stubs/aliases "$UserConfigPath/aliases"
 
-echo "Homestead initialized!"
+echo "Box initialized!"

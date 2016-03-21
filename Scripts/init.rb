@@ -154,6 +154,11 @@ class PhpCentOSBox
 
       conf = site["conf"]
 
+      config.vm.provision "shell" do |s|
+        s.path = scriptDir + "/serve-init.sh"
+        s.args = [conf]
+      end
+
       site["servers"].each do |server|
 
         type = server["type"] ||= "laravel"

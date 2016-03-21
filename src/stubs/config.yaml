@@ -14,8 +14,14 @@ folders:
       to: /home/vagrant/Projects
 
 sites:
-    - map: demo.app
-      to: /home/vagrant/Projects/Demo
+    - conf: demo.app
+      servers:
+        - map: static.demo.app
+          to: /home/vagrant/Projects/Demo/static
+          type: static
+
+        - map: "demo.app *.demo.app"
+          to: /home/vagrant/Projects/Demo
 
 #databases:
 #    - homestead
