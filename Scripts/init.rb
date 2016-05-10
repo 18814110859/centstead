@@ -1,5 +1,5 @@
-class PhpCentOSBox
-  def PhpCentOSBox.configure(config, settings)
+class Centstead
+  def Centstead.configure(config, settings)
 
     # Set The VM Provider
     # 设置 虚拟机 软件
@@ -17,9 +17,9 @@ class PhpCentOSBox
     config.ssh.forward_agent = true
 
     # Configure The Box
-    config.vm.box = "jason-chang/php-centos-box"
+    config.vm.box = "jason-chang/centstead-box"
     #config.vm.box_version = settings["version"] ||= ">= 0.4.0"
-    config.vm.hostname = settings["hostname"] ||= "PHPCentOSBox"
+    config.vm.hostname = settings["hostname"] ||= "Centstead"
 
     # Configure A Private Network IP
     config.vm.network :private_network, ip: settings["ip"] ||= "192.168.10.10"
@@ -33,7 +33,7 @@ class PhpCentOSBox
 
     # Configure A Few VirtualBox Settings
     config.vm.provider "virtualbox" do |vb|
-      vb.name = settings["name"] ||= "PHPCentOSBox-1"
+      vb.name = settings["name"] ||= "Centstead-1"
       vb.customize ["modifyvm", :id, "--memory", settings["memory"] ||= "2048"]
       vb.customize ["modifyvm", :id, "--cpus", settings["cpus"] ||= "1"]
       vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
@@ -44,7 +44,7 @@ class PhpCentOSBox
     # Configure A Few VMware Settings
     ["vmware_fusion", "vmware_workstation"].each do |vmware|
       config.vm.provider vmware do |v|
-        v.vmx["displayName"] = "PHPCentOSBox"
+        v.vmx["displayName"] = "Centstead"
         v.vmx["memsize"] = settings["memory"] ||= 2048
         v.vmx["numvcpus"] = settings["cpus"] ||= 1
         v.vmx["guestOS"] = "centos-64"
@@ -232,7 +232,7 @@ class PhpCentOSBox
         end
 
         config.vm.provision "shell" do |s|
-          s.inline = "echo \"\n# Set PhpCentOSBox Environment Variable\nexport $1=$2\" >> /home/vagrant/.profile"
+          s.inline = "echo \"\n# Set Centstead Environment Variable\nexport $1=$2\" >> /home/vagrant/.profile"
           s.args = [var["key"], var["value"]]
         end
       end
@@ -245,19 +245,6 @@ class PhpCentOSBox
     # Update Composer On Every Provision
     config.vm.provision "shell" do |s|
       s.inline = "/usr/local/bin/composer self-update"
-    end
-
-    # Configure Blackfire.io
-    if settings.has_key?("blackfire")
-      config.vm.provision "shell" do |s|
-        s.path = scriptDir + "/blackfire.sh"
-        s.args = [
-            settings["blackfire"][0]["id"],
-            settings["blackfire"][0]["token"],
-            settings["blackfire"][0]["client-id"],
-            settings["blackfire"][0]["client-token"]
-        ]
-      end
     end
   end
 end

@@ -20,7 +20,7 @@ block="server {
     access_log off;
     error_log  /var/log/nginx/$1-ssl-error.log error;
 
-    sendfile off;
+    sendfile on;
 
     client_max_body_size 100m;
 

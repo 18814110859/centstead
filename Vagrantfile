@@ -11,6 +11,6 @@ require File.expand_path(File.dirname(__FILE__) + '/scripts/init.rb')
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
-  PhpCentOSBox.configure(config, YAML::load(File.read(ConfigFile)))
+  Centstead.configure(config, YAML::load(File.read(ConfigFile)))
 
 end

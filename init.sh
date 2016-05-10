@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-UserConfigPath=~/.homestead
+UserConfigPath=config
 
 mkdir -p "$UserConfigPath"
 
