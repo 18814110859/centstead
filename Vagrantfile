@@ -7,7 +7,7 @@ confDir = File.expand_path(File.dirname(__FILE__) + "/config");
 
 ConfigFile = confDir + "/config.yaml"
 
-require File.expand_path(File.dirname(__FILE__) + '/scripts/init.rb')
+require File.expand_path(File.dirname(__FILE__) + '/scripts/centstead.rb')
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 

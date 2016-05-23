@@ -10,16 +10,23 @@ class Centstead
     scriptDir = File.dirname(__FILE__)
 
     # Prevent TTY Errors
-    #
     config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
 
     # Allow SSH Agent Forward from The Box
     config.ssh.forward_agent = true
 
-    # Configure The Box
-    config.vm.box = "jason-chang/centstead-box"
+    # Configure The Box / 配置 基础盒子
+    config.vm.box = settings["box"] ||= "jason-chang/centstead-box"
+
     #config.vm.box_version = settings["version"] ||= ">= 0.4.0"
     config.vm.hostname = settings["hostname"] ||= "Centstead"
+
+    # A private dhcp network is required for NFS to work (on Windows hosts, at least)
+    config.vm.network :private_network, type: "dhcp"
+
+    # Set uid and gid for winnfsd
+    config.winnfsd.uid = 1000
+    config.winnfsd.gid = 1000
 
     # Configure A Private Network IP
     config.vm.network :private_network, ip: settings["ip"] ||= "192.168.10.10"
@@ -128,7 +135,7 @@ class Centstead
         mount_opts = []
 
         if (folder["type"] == "nfs")
-          mount_opts = folder["mount_options"] ? folder["mount_options"] : ['actimeo=1']
+          mount_opts = folder["mount_options"] ? folder["mount_options"] : ['vers=3,udp,nolock,actimeo=1']
         elsif (folder["type"] == "smb")
           mount_opts = folder["mount_options"] ? folder["mount_options"] : ['vers=3.02', 'mfsymlinks']
         end
@@ -143,10 +150,50 @@ class Centstead
       end
     end
 
+    # 替换可变应用
+    if settings.has_key?("reprovison") && settings["reprovison"]
+
+      if settings.has_key?("reinstall") && settings["reinstall"]
+        config.vm.provision "shell" do |s|
+          s.path = scriptDir + "/clear-env.sh"
+        end
+      end
+
+      # 拷贝卸载脚本
+      config.vm.provision "file", source: "./scripts/remove", destination: "/home/vagrant/.remove"
+
+
+      # 是否替换 PHP
+=begin
+      if settings.has_key?("php") && settings["php"]
+        config.vm.provision "shell" do |s|
+          s.path = scriptDir+  "/php/"+ settings["php"]+ ".sh"
+        end
+      end
+=end
+
+      # 是否替换 Mysql
+      if settings.has_key?("mysql") && settings["mysql"]
+        config.vm.provision "shell" do |s|
+          s.path = scriptDir+  "/mysql/"+ settings["mysql"]+ ".sh"
+        end
+      end
+
+      # 是否替换 Postgre
+=begin
+      if settings.has_key?("pgsql") && settings["pgsql"]
+        config.vm.provision "shell" do |s|
+          s.path = scriptDir+  "/pgsql/"+ settings["pgsql"]+ ".sh"
+        end
+      end
+=end
+    end
+
+
     # Install All The Configured Nginx Sites
     # 配置 nginx 域名网站
     config.vm.provision "shell" do |s|
-      s.path = scriptDir + "/clear-sites.sh"
+      s.path = scriptDir + "/clear-serves.sh"
     end
 
 
@@ -172,7 +219,7 @@ class Centstead
         end
 
         config.vm.provision "shell" do |s|
-          s.path = scriptDir + "/serve-#{type}.sh"
+          s.path = scriptDir + '/serves/' + "#{type}.sh"
           s.args = [conf, server["map"], server["to"], server["port"] ||= "80", server["ssl"] ||= "443"]
         end
 
@@ -193,52 +240,18 @@ class Centstead
     end
 
     config.vm.provision "shell" do |s|
-      s.path = scriptDir + "/reload-sites.sh"
+      s.path = scriptDir + "/reload-serves.sh"
     end
-
-    # Install MariaDB If Necessary
-    if settings.has_key?("mariadb") && settings["mariadb"]
-      config.vm.provision "shell" do |s|
-        s.path = scriptDir + "/install-maria.sh"
-      end
-    end
-
 
     # Configure All Of The Configured Databases
     if settings.has_key?("databases")
-      settings["databases"].each do |db|
+      settings["databases"].each do |database|
+        name = database["name"]
+        db = database["db"] ||= "mysql"
         config.vm.provision "shell" do |s|
-          s.path = scriptDir + "/create-mysql.sh"
-          s.args = [db]
+          s.path = scriptDir + "/create-" + db + ".sh"
+          s.args = [name]
         end
-
-        config.vm.provision "shell" do |s|
-          s.path = scriptDir + "/create-postgres.sh"
-          s.args = [db]
-        end
-      end
-    end
-
-    # Configure All Of The Server Environment Variables
-    config.vm.provision "shell" do |s|
-      s.path = scriptDir + "/clear-variables.sh"
-    end
-
-    if settings.has_key?("variables")
-      settings["variables"].each do |var|
-        config.vm.provision "shell" do |s|
-          s.inline = "echo \"\nenv[$1] = '$2'\" >> /etc/php/7.0/fpm/php-fpm.conf"
-          s.args = [var["key"], var["value"]]
-        end
-
-        config.vm.provision "shell" do |s|
-          s.inline = "echo \"\n# Set Centstead Environment Variable\nexport $1=$2\" >> /home/vagrant/.profile"
-          s.args = [var["key"], var["value"]]
-        end
-      end
-
-      config.vm.provision "shell" do |s|
-        s.inline = "service php7.0-fpm restart"
       end
     end
 

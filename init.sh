@@ -4,8 +4,8 @@ UserConfigPath=config
 
 mkdir -p "$UserConfigPath"
 
-cp -i src/stubs/config.yaml "$UserConfigPath/config.yaml"
-cp -i src/stubs/after.sh "$UserConfigPath/after.sh"
-cp -i src/stubs/aliases "$UserConfigPath/aliases"
+cp -i stubs/config.yaml "$UserConfigPath/config.yaml"
+cp -i stubs/after.sh "$UserConfigPath/after.sh"
+cp -i stubs/aliases "$UserConfigPath/aliases"
 
 echo "Box initialized!"

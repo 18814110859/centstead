@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 
 # Check If Maria Has Been Installed
 
@@ -30,8 +31,8 @@ apt-get update
 export DEBIAN_FRONTEND=noninteractive
 
 debconf-set-selections <<< "mariadb-server-10.1 mysql-server/data-dir select ''"
-debconf-set-selections <<< "mariadb-server-10.1 mysql-server/root_password password secret"
-debconf-set-selections <<< "mariadb-server-10.1 mysql-server/root_password_again password secret"
+debconf-set-selections <<< "mariadb-server-10.1 mysql-server/root_password password vagrant"
+debconf-set-selections <<< "mariadb-server-10.1 mysql-server/root_password_again password vagrant"
 
 # Install MySQL
 
@@ -45,11 +46,11 @@ echo "default_password_lifetime = 0" >> /etc/mysql/my.cnf
 
 sed -i '/^bind-address/s/bind-address.*=.*/bind-address = 0.0.0.0/' /etc/mysql/my.cnf
 
-mysql --user="root" --password="secret" -e "GRANT ALL ON *.* TO root@'0.0.0.0' IDENTIFIED BY 'secret' WITH GRANT OPTION;"
+mysql --user="root" --password="vagrant" -e "GRANT ALL ON *.* TO root@'0.0.0.0' IDENTIFIED BY 'vagrant' WITH GRANT OPTION;"
 service mysql restart
 
-mysql --user="root" --password="secret" -e "CREATE USER 'homestead'@'0.0.0.0' IDENTIFIED BY 'secret';"
-mysql --user="root" --password="secret" -e "GRANT ALL ON *.* TO 'homestead'@'0.0.0.0' IDENTIFIED BY 'secret' WITH GRANT OPTION;"
-mysql --user="root" --password="secret" -e "GRANT ALL ON *.* TO 'homestead'@'%' IDENTIFIED BY 'secret' WITH GRANT OPTION;"
-mysql --user="root" --password="secret" -e "FLUSH PRIVILEGES;"
+mysql --user="root" --password="vagrant" -e "CREATE USER 'vagrant'@'0.0.0.0' IDENTIFIED BY 'vagrant';"
+mysql --user="root" --password="vagrant" -e "GRANT ALL ON *.* TO 'vagrant'@'0.0.0.0' IDENTIFIED BY 'vagrant' WITH GRANT OPTION;"
+mysql --user="root" --password="vagrant" -e "GRANT ALL ON *.* TO 'vagrant'@'%' IDENTIFIED BY 'vagrant' WITH GRANT OPTION;"
+mysql --user="root" --password="vagrant" -e "FLUSH PRIVILEGES;"
 service mysql restart
