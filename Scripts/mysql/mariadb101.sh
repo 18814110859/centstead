@@ -26,6 +26,9 @@ sed -i '/\[mysqld\]/acharacter_set_server=utf8' /etc/my.cnf.d/server.cnf
 # 设置 MySQL 远程认证
 sed -i '/\[mysqld\]/abind-address = 0.0.0.0' /etc/my.cnf.d/server.cnf
 
+# 关闭 DNS 反查
+# sed -i '$a skip-name-resolve' /etc/my.cnf
+
 systemctl restart mariadb.service
 
 mysql --user="root" -e "SET PASSWORD = PASSWORD('vagrant');"

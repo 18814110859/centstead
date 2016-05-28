@@ -252,15 +252,17 @@ class Centstead
     end
 
     # Hosts
-    config.hostmanager.enabled = true
-    config.hostmanager.manage_host = true
-    config.hostmanager.manage_guest = true
-    config.hostmanager.ignore_private_ip = false
-    config.hostmanager.include_offline = true
+    if defined? config::hostmanager
+      config.hostmanager.enabled = true
+      config.hostmanager.manage_host = true
+      config.hostmanager.manage_guest = true
+      config.hostmanager.ignore_private_ip = false
+      config.hostmanager.include_offline = true
 
-    config.hostmanager.aliases = aliases
+      config.hostmanager.aliases = aliases
 
-    config.vm.provision "hostmanager"
+      config.vm.provision "hostmanager"
+    end
 
     # Configure All Of The Configured Databases
     if settings.has_key?("databases")

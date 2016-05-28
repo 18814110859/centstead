@@ -29,6 +29,9 @@ sed -i '$a character_set_server=utf8' /etc/my.cnf
 # 设置 MySQL 远程认证
 sed -i '$a bind-address = 0.0.0.0' /etc/my.cnf
 
+# 关闭 DNS 反查
+# sed -i '$a skip-name-resolve' /etc/my.cnf
+
 systemctl set-environment MYSQLD_OPTS="--skip-grant-tables"
 systemctl restart mysqld.service
 

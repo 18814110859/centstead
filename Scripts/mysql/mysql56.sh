@@ -26,6 +26,9 @@ sed -i '/\[mysqld\]/a character_set_server=utf8' /etc/my.cnf
 # 设置 MySQL 远程认证
 sed -i '/\[mysqld\]/a bind-address = 0.0.0.0' /etc/my.cnf
 
+# 关闭 DNS 反查
+# sed -i '$a skip-name-resolve' /etc/my.cnf
+
 systemctl restart mysqld.service
 
 mysql --user="root" --connect-expired-password -e "SET PASSWORD = PASSWORD('vagrant');"

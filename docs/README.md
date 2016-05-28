@@ -4,12 +4,14 @@
 #### [介绍](#introduction)
 #### [开始](#start)
 #### [基础配置](#base-config)
-#### [软件环境](#environment-soft)
-#### [文件拷贝](#copy-file)
 #### [共享文件夹](#share-folder)
-#### [网站配置](#sites-config)
+#### [Nginx 网站配置](#sites-config)
+#### [定制环境软件](#environment-soft)
+#### [文件拷贝](#copy-file)
 #### [计划任务](#schedule)
-#### [数据库创建](#create-database)
+#### [数据库自动创建](#create-database)
+#### [SSH连接](#ssh)
+#### [自定义虚拟环境](#customize)
 ### 附录
 #### [Vagrant 介绍](#vagrant)
 #### [团队配合](#teamwork)
@@ -19,14 +21,18 @@
 <h1 id="introduction">介绍</h1>
 
 基于开发的实际需求,PHP开发者通常需要一个贴近生产环境,又易于维护的测试与开发环境.以往的选择:
+
 1. xampp, wamp, phpstudy…… 集成环境, 启动方便,占用小,但是需要往往不能提供 curl,pgsql,imagick ……插件, 自行编译成本很高.
 2. 基于虚拟机手工搭建一个linux环境,然而虚拟机的初始化过程却相当费时费力.
 
-似乎'易用'与'贴近生产环境',很难平衡. 然而 Vagrant 的到来为我们提供了这种可能. Vagrant 提供了一个便捷的方式来管理和设置虚拟机, Vagrant 提出了盒子的概念. 一个盒子即时一个初始化的虚拟系统, 需要的时候可以基于盒子快速生成虚拟机, 出现错误时又可以在几分钟之内快速销毁重建. 
+似乎'易用'与'贴近生产环境',很难平衡. 然而 Vagrant 的到来为我们提供了这种可能. Vagrant 提供了一个便捷的方式来管理和设置虚拟机.
+
+Vagrant 提出了盒子的概念. 一个盒子即时一个初始化的虚拟系统, 需要的时候可以基于盒子快速生成虚拟机, 出现错误时又可以在几分钟之内快速销毁重建.
 
 Centstead 就是一个高度定制的 CentOS + php 盒子, 你可以通过 Centstead 提供的脚本 与 vagrant 命令方便的管理你的虚拟环境.
 
-#####Centstead 预置软件： (可基于配置快速切换版本)
+##### Centstead 预置软件： (可基于配置快速切换版本)
+
 + CentOS 7
 + PHP  5.4 / 5.5 / 5.6 / 7.0
 + Mysql  5.5 / 5.6 / 5.7
@@ -103,54 +109,132 @@ http://Centstead.app
 
 <h1 id="base-config">基础配置</h1>
 
-<h1 id="environment-soft">软件环境</h1>
+虚拟机 ip 
+	
+    ip: "192.168.10.10"
+    
+虚拟机内存
 
-1. [PHP版本切换](php.md)
-2. [Mysql/MariaDB版本切换](mysql.md)
-3. [PostgreSql版本切换](postgre.md)
+	memory: 2048
+    
+虚拟机 cpu 核心数
 
-<h1 id="copy-file">文件拷贝</h1>
+	cpus: 1
+
+虚拟机容器: Vagrant 默认可以提供 多种虚拟机容器, 包括 Vmware 和 VirtualBox, 但是 Vmware 支持是付费的, 本人无米暂时只支持 VirtualBox
+
+	provider: virtualbox
+    
+基础盒子名称
+	
+    box: jason-chang/centstead-box
 
 <h1 id="share-folder">共享文件夹</h1>
 
 Centstead.yaml 文件中的 folders 属性列出了所有主机和 Centstead 虚拟机共享的文件夹，一旦这些目录中的文件有了修改，将会在本地和 Centstead 虚拟机之间保持同步，如果有需要的话，你可以配置多个共享文件夹（一般一个就够了）：
 
-folders:
-    - map: ~/Code
-      to: /home/vagrant/Code
+    folders:
+      - map: ~/Projects
+        to: /home/vagrant/Projects
+      
 如果要开启 NFS，只需简单添加一个标识到同步文件夹配置：
 
-folders:
-    - map: ~/Code
-      to: /home/vagrant/Code
-      type: "nfs"
-配置 Nginx 站点
+    folders:
+        - map: ~/Code
+          to: /home/vagrant/Code
+          type: nfs
 
-<h1 id="sites-config">网站配置</h1>
+
+<h1 id="sites-config">Nginx 网站配置</h1>
 
 对 Nginx 不熟？没问题，通过 sites 属性你可以方便地将“域名”映射到 Centstead 虚拟机的指定目录，Centstead.yaml 中默认已经配置了一个示例站点。和共享文件夹一样，你可以配置多个站点：
+不同于, homestead, Centstead 的站点是基于项目的.
 
-sites:
-    - map: Centstead.app
-      to: /home/vagrant/Code/Laravel/public
-你还可以通过设置 hhvm 为 true 让所有的 Centstead 站点使用 HHVM：
+conf: 项目最终保存成的配置文件
 
+servers: 项目包含的域名 servers
+
+map: 支持的 域名 server name 多个域名可以空格分隔.
+to：指向的项目根入口目录.
+type: 站点类型, 支持的配置值: static(静态文件站), proxy (反向代理站), laravel (项目网站), thinkphp (thinkphp网站) , symfony (symfony2网站)
+port：http 监听端口
+ssl: https 监听端口
+
+aliases：
+所有在 centstead 种配置的站点 centstead 将智能的加入主机的 hosts 文件中, 这样当 vagrant 启动完成的时候后，可以直接浏览配置的域名了。
+centstead 默认取 map 值加入 hosts 文件，但是由于 hosts 文件并不是非常强大, 则 `*.demo.app` 类似的泛解析域名将不能支持, aliases 就是为此提供的自定义接口。
+
+示例: 
+
+~~~yaml
 sites:
-    - map: Centstead.app
-      to: /home/vagrant/Code/Laravel/public
-      hhvm: true
+  - conf: demo.app
+    servers:
+      - map: static.demo.app
+        to: /home/vagrant/Projects/Demo/static
+        type: static
+
+      - map: "demo.app *.demo.app"
+        to: /home/vagrant/Projects/Demo
+        aliases: "demo.app a.demo.app u.demo.app www.demo.app"
+        \# port: 80
+        \# ssl: 443
+~~~
+
 默认情况下，每个站点都可以通过 HTTP（端口号：8000）和 HTTPS（端口号：44300）进行访问。
 
-Hosts文件
+配置完成后,执行 `vagrant up` 就可以通过浏览器调试指定的网站了.
 
-不要忘记把 Nginx 站点配置中的域名添加到本地机器上的 hosts 文件中，该文件会将对本地域名的请求重定向到 Centstead 虚拟机，在 Mac 或 Linux上，该文件位于 /etc/hosts，在 Windows 上，位于 C:\Windows\System32\drivers\etc\hosts，添加方式如下：
+<h1 id="environment-soft">定制环境软件</h1>
 
-192.168.10.10 Centstead.app
-确保 IP 地址和你的 Centstead.yaml 文件中列出的一致，一旦你将域名放置到 hosts 文件，就可以在浏览器中通过该域名访问站点了！
+为了更加贴近实际的生产环境我们往往需要配置特定的 php , mysql, postgre 版本. centstead 则为此提供了非常简便的配置支持.
+
+#### PHP版本切换
+
+通过 `php:` 配置实现
+支持的值: php54, php55, php56 php70 对应不同 php 版本.
+例如:
+~~~yaml
+php: php70
+~~~
+提示: Centstead 已经默认配置好所有 php 版本的 xdebug 支持, 
+只需要配合 xdebug helper + phpstorm/eclipse …… 远程调试 php 了, 默认调用调试端口 9000.
+所有 php 版本均默认安装了, redis, memcached, postgre, mysql, gd, imgick, mbstring, mcrypt, curl, openssl, xdebug 插件。
+
+#### Mysql/MariaDB版本切换
+
+通过 `mysql:` 配置实现
+支持的值: mysql55, mysql56, mysql57, mariadb55, mariadb10, mariadb101 对应不同 Mysql/MariaDB 版本.
+例如:
+~~~yaml
+mysql: mariadb101
+~~~
+提示: Centstead 已经默认将主机的 33060 端口映射到 虚拟主机的 3306 端口, 
+并且添加了 用户名：vagrant 密码: vagrant 权限与 root 相同的 mysql 用户，
+故此可以通过 vagrant 用户连接 localhost:33060 管理虚拟机Mysql/MariaDB数据库
+
+#### PostgreSql版本切换
+
+通过 `pgsql:` 配置实现
+支持的值 pgsql92, pgsql93, pgsql94, pgsql95, 对应不同 PostgreSql 版本.
+例如:
+~~~yaml
+pgsql: pgsql95
+~~~
+提示: 虽然国内目前使用, PostgreSql 的用户越来越多, 但是始终不如 mysql 多, 所以默认盒子并没有安装 PostgreSql, 但是配置此值稍等几分, PostgreSql 就配置好了 默认的 可以通过.
+Centstead 已经默认将主机的 54320 端口映射到 虚拟主机的 5432 端口, 
+并且添加了 用户名：vagrant 密码: vagrant 权限与 root 相同的 postgre 用户，
+故此可以通过 vagrant 用户连接 localhost:54320 管理虚拟机 PostgreSql 数据库.
+
+<h1 id="copy-file">文件拷贝</h1>
 
 <h1 id="schedule">计划任务</h1>
 
-<h1 id="create-database">数据库创建</h1>
+<h1 id="create-database">数据库自动创建</h1>
+
+<h1 id="ssh">SSH连接</h1>
+
+<h1 id="customize">自定义虚拟环境</h1>
 
 <h1>附录</h1>
 

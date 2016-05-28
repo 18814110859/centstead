@@ -40,6 +40,9 @@ sites:
       - map: "demo.app *.demo.app"
         to: /home/vagrant/Projects/Demo
         aliases: "demo.app a.demo.app u.demo.app www.demo.app"
+        # port: 80
+        # ssl: 443
+
 
 
 # 创建数据库
