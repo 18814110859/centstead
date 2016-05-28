@@ -19,10 +19,10 @@ This project is not stable,u can only use to learn.
 # Todo List
 ------
 ### 组件
-1. 支持php 5.5、5.6、7.0 配置切换 (√)
+1. 支持php 5.5、5.6、7.0 (√)
 2. 支持Mysql 5.5 5.6 5.7 (√)
-3. 支持MariaDB 5.5 10 10.1
-4. 支持PostgreSQL 9.2 9.3 9.4 9.5
+3. 支持MariaDB 5.5 10 10.1 (√)
+4. 支持PostgreSQL 9.2 9.3 9.4 9.5 (√)
 5. 支持redis (√)
 6. 支持sqllite3 (√)
 7. 支持Supervisor (√)
@@ -30,18 +30,15 @@ This project is not stable,u can only use to learn.
 9. 支持nodejs npm (√)
 10. 支持memcached (√)
 11. 支持Beanstalkd (√)
-13. 支持Xdebug (√)
 
 ### 特性
-1. 支持设置全局proxy
-3. 支持VirtualBox与Vmware
-4. 自动导入用户公钥。 (√)
+4. 自动导入用户公钥 (√)
 5. 支持单项目多站点 (√)
-6. 支持自动设置Thinkphp的站点。(√)
-7. 支持自动设置laravel的站点(√)
-8. 支持自动设置静态站点(√)
+6. 支持自动设置Thinkphp的站点 (√)
+7. 支持自动设置laravel的站点 (√)
+8. 支持自动设置静态站点 (√)
 9. 支持设置端口映射 (√)
 10. 支持文件拷贝 (√)
 11. 支持共享文件夹 (√)
 12. 支持软件覆盖开关 (√)
-14. provision after 脚本
+14. provision after 脚本 (√)

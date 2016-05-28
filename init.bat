@@ -1,5 +1,8 @@
 @echo off
 
+vagrant plugin install vagrant-winnfsd
+vagrant plugin install vagrant-hostmanager
+
 set UserConfigPath=config
 
 mkdir %UserConfigPath%

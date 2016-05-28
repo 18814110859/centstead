@@ -9,7 +9,7 @@ class Centstead
     # 设置脚本位置变量
     scriptDir = File.dirname(__FILE__)
 
-    # Prevent TTY Errors
+    # 预防 TTY 错误
     config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
 
     # Allow SSH Agent Forward from The Box
@@ -25,8 +25,10 @@ class Centstead
     config.vm.network :private_network, type: "dhcp"
 
     # Set uid and gid for winnfsd
-    config.winnfsd.uid = 1000
-    config.winnfsd.gid = 1000
+    if defined? config::winnfsd
+      config.winnfsd.uid = 1000
+      config.winnfsd.gid = 1000
+    end
 
     # Configure A Private Network IP
     config.vm.network :private_network, ip: settings["ip"] ||= "192.168.10.10"
@@ -78,7 +80,7 @@ class Centstead
 
     # Default Port Forwarding
     default_ports = {
-        80   => 80,
+        80   => 8000,
         443  => 44300,
         3306 => 33060,
         5432 => 54320
@@ -151,9 +153,10 @@ class Centstead
     end
 
     # 替换可变应用
-    if settings.has_key?("reprovison") && settings["reprovison"]
+    if settings.has_key?("provison_soft") && settings["provison_soft"]
 
-      if settings.has_key?("reinstall") && settings["reinstall"]
+      # 是否 重新安装同版本
+      if settings.has_key?("provison_reinstall") && settings["provison_reinstall"]
         config.vm.provision "shell" do |s|
           s.path = scriptDir + "/clear-env.sh"
         end
@@ -164,13 +167,11 @@ class Centstead
 
 
       # 是否替换 PHP
-=begin
       if settings.has_key?("php") && settings["php"]
         config.vm.provision "shell" do |s|
           s.path = scriptDir+  "/php/"+ settings["php"]+ ".sh"
         end
       end
-=end
 
       # 是否替换 Mysql
       if settings.has_key?("mysql") && settings["mysql"]
@@ -180,13 +181,14 @@ class Centstead
       end
 
       # 是否替换 Postgre
-=begin
       if settings.has_key?("pgsql") && settings["pgsql"]
         config.vm.provision "shell" do |s|
           s.path = scriptDir+  "/pgsql/"+ settings["pgsql"]+ ".sh"
         end
       end
-=end
+
+      # 移除卸载脚本
+      config.vm.provision :shell, inline: "rm -rf /home/vagrant/.remove"
     end
 
 
@@ -196,7 +198,7 @@ class Centstead
       s.path = scriptDir + "/clear-serves.sh"
     end
 
-
+    aliases = []
     settings["sites"].each do |site|
 
       conf = site["conf"]
@@ -223,6 +225,12 @@ class Centstead
           s.args = [conf, server["map"], server["to"], server["port"] ||= "80", server["ssl"] ||= "443"]
         end
 
+        if server.has_key?("aliases") && server["aliases"]
+          aliases.push(server["aliases"])
+        else
+          aliases.push(server["map"])
+        end
+
         # Configure The Cron Schedule
         if (server.has_key?("schedule"))
           config.vm.provision "shell" do |s|
@@ -242,6 +250,17 @@ class Centstead
     config.vm.provision "shell" do |s|
       s.path = scriptDir + "/reload-serves.sh"
     end
+
+    # Hosts
+    config.hostmanager.enabled = true
+    config.hostmanager.manage_host = true
+    config.hostmanager.manage_guest = true
+    config.hostmanager.ignore_private_ip = false
+    config.hostmanager.include_offline = true
+
+    config.hostmanager.aliases = aliases
+
+    config.vm.provision "hostmanager"
 
     # Configure All Of The Configured Databases
     if settings.has_key?("databases")

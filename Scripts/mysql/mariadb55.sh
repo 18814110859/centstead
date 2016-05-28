@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # 检测是否需要安装
-if [ -f /home/vagrant/.env/mariadb55 ] && [ ! -f ~/.replace ]
+if [ -f /home/vagrant/.env/mariadb55 ]
 then
     exit 0
 fi
@@ -15,10 +15,10 @@ yum install -y mariadb-server maraidb-client mariadb-devel mariadb-common --enab
 # 建立 环境标识
 rm -rf /home/vagrant/.env/mysql*
 rm -rf /home/vagrant/.env/mariadb*
-touch /home/vagrant/.env/mariadb101
+touch /home/vagrant/.env/mariadb55
 
-systemctl enable mariadb.service
-systemctl start mariadb.service
+chkconfig mysql on
+service mysql start
 
 # 配置 MySQL 字符集
 sed -i '/\[mysqld\]/acharacter_set_server=utf8' /etc/my.cnf.d/server.cnf
@@ -26,18 +26,15 @@ sed -i '/\[mysqld\]/acharacter_set_server=utf8' /etc/my.cnf.d/server.cnf
 # 设置 MySQL 远程认证
 sed -i '/\[mysqld\]/abind-address = 0.0.0.0' /etc/my.cnf.d/server.cnf
 
-# 配置 MySQL 密码生存时间
-#sed -i '/\[mysqld\]/adefault_password_lifetime = 0' /etc/my.cnf.d/server.cnf
-
-systemctl restart mariadb.service
+service mysql restart
 
 mysql --user="root" -e "SET PASSWORD = PASSWORD('vagrant');"
 
-systemctl restart mariadb.service
+service mysql restart
 
 mysql --user="root" --password="vagrant" -e "GRANT ALL ON *.* TO root@'0.0.0.0' IDENTIFIED BY 'vagrant' WITH GRANT OPTION;"
 
-systemctl restart mariadb.service
+service mysql restart
 
 mysql --user="root" --password="vagrant" -e "CREATE USER 'vagrant'@'0.0.0.0' IDENTIFIED BY 'vagrant';"
 mysql --user="root" --password="vagrant" -e "GRANT ALL ON *.* TO 'vagrant'@'localhost' IDENTIFIED BY 'vagrant' WITH GRANT OPTION;"
@@ -46,6 +43,6 @@ mysql --user="root" --password="vagrant" -e "GRANT ALL ON *.* TO 'vagrant'@'%' I
 mysql --user="root" --password="vagrant" -e "FLUSH PRIVILEGES;"
 mysql --user="root" --password="vagrant" -e "drop DATABASE test;"
 
-systemctl restart mariadb.service
+service mysql restart
 
 mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql --user="root" --password="vagrant" mysql

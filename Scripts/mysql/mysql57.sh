@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # 检测是否需要安装
-if [ -f /home/vagrant/.env/mysql57 ] && [ ! -f ~/.replace ]
+if [ -f /home/vagrant/.env/mysql57 ]
 then
     exit 0
 fi
@@ -35,16 +35,20 @@ systemctl restart mysqld.service
 mysql --user="root" -e "UPDATE mysql.user SET authentication_string = PASSWORD('vagrant') WHERE User = 'root' AND Host = 'localhost';"
 mysql --user="root" -e "FLUSH PRIVILEGES;"
 
-
-systemctl set-environment MYSQLD_OPTS=""
+systemctl set-environment MYSQLD_OPTS="--validate-password=OFF"
 systemctl restart mysqld.service
 
 mysql --user="root" --password="vagrant" --connect-expired-password -e "SET PASSWORD = PASSWORD('vagrant');"
 
+systemctl set-environment MYSQLD_OPTS=""
+systemctl restart mysqld.service
+
+mysql --user="root" --password="vagrant" -e "UNINSTALL PLUGIN validate_password;"
 mysql --user="root" --password="vagrant" -e "GRANT ALL ON *.* TO root@'localhost' IDENTIFIED BY 'vagrant' WITH GRANT OPTION;"
 mysql --user="root" --password="vagrant" -e "GRANT ALL ON *.* TO root@'0.0.0.0' IDENTIFIED BY 'vagrant' WITH GRANT OPTION;"
 mysql --user="root" --password="vagrant" -e "FLUSH PRIVILEGES;"
 
+mysql --user="root" --password="vagrant" -e "GRANT ALL ON *.* TO 'vagrant'@'localhost' IDENTIFIED BY 'vagrant' WITH GRANT OPTION;"
 mysql --user="root" --password="vagrant" -e "GRANT ALL ON *.* TO 'vagrant'@'0.0.0.0' IDENTIFIED BY 'vagrant' WITH GRANT OPTION;"
 mysql --user="root" --password="vagrant" -e "GRANT ALL ON *.* TO 'vagrant'@'%' IDENTIFIED BY 'vagrant' WITH GRANT OPTION;"
 mysql --user="root" --password="vagrant" -e "FLUSH PRIVILEGES;"

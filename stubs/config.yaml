@@ -6,9 +6,9 @@ provider: virtualbox
 box: jason-chang/centstead-box
 
 # Provison 时是否重新部署 软件环境
-reprovison: 0
+provison_soft: true
 # Provison 时如果存在同版软件是否重新安装
-replace: 0
+# provison_reinstall: true
 
 authorize: ~/.ssh/id_rsa.pub
 
@@ -39,6 +39,8 @@ sites:
 
       - map: "demo.app *.demo.app"
         to: /home/vagrant/Projects/Demo
+        aliases: "demo.app a.demo.app u.demo.app www.demo.app"
+
 
 # 创建数据库
 # databases:

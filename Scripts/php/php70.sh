@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # 检测是否需要安装
-if [ -f /home/vagrant/.env/php70 ] && [ ! -f ~/.replace ]
+if [ -f /home/vagrant/.env/php70 ]
 then
     exit 0
 fi

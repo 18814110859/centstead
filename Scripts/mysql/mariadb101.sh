@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # 检测是否需要安装
-if [ -f /home/vagrant/.env/mariadb101 ] && [ ! -f ~/.replace ]
+if [ -f /home/vagrant/.env/mariadb101 ]
 then
     exit 0
 fi
@@ -25,9 +25,6 @@ sed -i '/\[mysqld\]/acharacter_set_server=utf8' /etc/my.cnf.d/server.cnf
 
 # 设置 MySQL 远程认证
 sed -i '/\[mysqld\]/abind-address = 0.0.0.0' /etc/my.cnf.d/server.cnf
-
-# 配置 MySQL 密码生存时间
-#sed -i '/\[mysqld\]/adefault_password_lifetime = 0' /etc/my.cnf.d/server.cnf
 
 systemctl restart mariadb.service
 
