@@ -333,7 +333,39 @@ yum install php-yar
 
 <h1 id="vagrant">Vagrant 介绍</h1>
 
+Vagrant 一个环境部署的脚手架工具, 在实际的应用中, 它可以支持 aws-ec2 docker …… 众多的类容器环境的部署.
+然而本应用中直接把 vagrant 视作管理 Vmware/VirtualBox…… 多种虚拟环境的统一接口.
 
+#### Vagrant 常用命令
+
+vagrant up
+
+	初始化并且启动一个虚拟环境( 初次执行 up 操作时会执行 provision 操作，以后将不再执行。 )
+
+vagrant halt
+
+	关闭虚拟环境
+
+vagrant provision
+
+	对虚拟环境重新执行初始化操作, 
+    centstead 的 创建nginx 站点，定制环境软件，共享文件夹， 拷贝文件， 自定义虚拟环境， 计划任务创建都是在这一层执行. 所以如果对上述内容修改以后都要执行 vagrant provision 应用更改.
+
+vagrant suspend
+
+	暂停虚拟环境
+
+vagrant resume
+	
+    恢复虚拟环境
+
+vagtant destroy
+
+	摧毁虚拟环境
+    
+#### 更多内容请看 官方文档
+	
+    [Vagrant Docs](https://www.vagrantup.com/docs/)
 
 <h1 id="teamwork">团队配合</h1>
 
