@@ -24,4 +24,5 @@ systemctl start postgresql-9.3.service
 sed -i "/#listen_addresses/alisten_addresses = '*'" /var/lib/pgsql/9.3/data/postgresql.conf
 echo "host    all             all             10.0.2.2/32               md5" | tee -a /var/lib/pgsql/9.3/data/pg_hba.conf
 sudo -i -u postgres psql -c "CREATE ROLE vagrant LOGIN UNENCRYPTED PASSWORD 'vagrant' SUPERUSER INHERIT NOCREATEDB NOCREATEROLE NOREPLICATION;"
+
 systemctl restart postgresql-9.3.service

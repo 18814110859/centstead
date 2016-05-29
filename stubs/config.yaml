@@ -43,7 +43,12 @@ sites:
         # port: 80
         # ssl: 443
 
-
+# 计划任务
+schedules:
+  - name: redis_demo
+    user: vagrant
+    interval: "* 0 */1 * *"
+    command: "/usr/bin/redis-cli -h localhost DEL 'some-throttle'"
 
 # 创建数据库
 # databases:

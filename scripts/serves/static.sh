@@ -11,4 +11,4 @@ block="server {
 }
 "
 
-echo "$block" >> "/etc/nginx/sites/$1"
+echo "$block" >> "/etc/nginx/sites/centstead-$1"

@@ -25,7 +25,7 @@ class Centstead
     config.vm.network :private_network, type: "dhcp"
 
     # Set uid and gid for winnfsd
-    if defined? config::winnfsd
+    if Vagrant.has_plugin?("vagrant-winnfsd")
       config.winnfsd.uid = 1000
       config.winnfsd.gid = 1000
     end
@@ -235,11 +235,12 @@ class Centstead
         if (server.has_key?("schedule"))
           config.vm.provision "shell" do |s|
             if (server["schedule"])
-              s.path = scriptDir + "/cron-schedule.sh"
-              s.args = [server["map"].tr('^A-Za-z0-9', ''), server["to"]]
+              command = "/usr/bin/php "+ server["to"]+ "/../artisan schedule:run >> /dev/null 2>&1";
+              s.path = scriptDir + "/create-schedule.sh"
+              s.args = ['serve', server["map"], 'vagrant', '* * * * *', command]
             else
-              s.inline = "rm -f /etc/cron.d/$1"
-              s.args = [server["map"].tr('^A-Za-z0-9', '')]
+              s.inline = "rm -f /etc/cron.d/centstead_serve-$1"
+              s.args = [server["map"]]
             end
           end
         end
@@ -252,13 +253,12 @@ class Centstead
     end
 
     # Hosts
-    if defined? config::hostmanager
+    if Vagrant.has_plugin?("vagrant-hostmanager")
       config.hostmanager.enabled = true
       config.hostmanager.manage_host = true
       config.hostmanager.manage_guest = true
       config.hostmanager.ignore_private_ip = false
       config.hostmanager.include_offline = true
-
       config.hostmanager.aliases = aliases
 
       config.vm.provision "hostmanager"
@@ -272,6 +272,19 @@ class Centstead
         config.vm.provision "shell" do |s|
           s.path = scriptDir + "/create-" + db + ".sh"
           s.args = [name]
+        end
+      end
+    end
+
+    # Configure The Cron Schedule
+    config.vm.provision :shell, inline: "rm -rf /etc/cron.d/centstead-*"
+
+    if settings.has_key?("schedules") && settings["schedules"]
+      settings["schedules"].each do |schedule|
+        config.vm.provision "shell" do |s|
+          user = schedule['user'] ||= "vagrant"
+          s.path = scriptDir + "/create-schedule.sh"
+          s.args = ['usual', schedule["name"], user, schedule['interval'], schedule['command']]
         end
       end
     end
