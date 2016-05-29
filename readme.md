@@ -171,7 +171,9 @@ port：http 监听端口
 ssl: https 监听端口
 
 aliases：
+
 所有在 centstead 种配置的站点 centstead 将智能的加入主机的 hosts 文件中, 这样当 vagrant 启动完成的时候后，可以直接浏览配置的域名了。
+
 centstead 默认取 map 值加入 hosts 文件，但是由于 hosts 文件并不是非常强大, 则 `*.demo.app` 类似的泛解析域名将不能支持, aliases 就是为此提供的自定义接口。
 
 示例: 
