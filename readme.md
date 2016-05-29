@@ -12,7 +12,7 @@
 #### [文件拷贝](#copy-file)
 #### [计划任务](#schedule)
 #### [数据库自动创建](#create-database)
-#### [SSH连接](#ssh)
+#### [SSH连接/管理虚拟环境](#ssh)
 #### [自定义虚拟环境](#customize)
 ### 附录
 #### [Vagrant 介绍/技巧](#vagrant)
@@ -144,18 +144,18 @@ box: jason-chang/centstead-box
 Centstead.yaml 文件中的 folders 属性列出了所有主机和 Centstead 虚拟机共享的文件夹，一旦这些目录中的文件有了修改，将会在本地和 Centstead 虚拟机之间保持同步，如果有需要的话，你可以配置多个共享文件夹（一般一个就够了）：
 
 ~~~yaml
-    folders:
-      - map: ~/Projects
-        to: /home/vagrant/Projects
+folders:
+  - map: ~/Projects
+    to: /home/vagrant/Projects
 ~~~
 
 如果要开启 NFS，只需简单添加一个标识到同步文件夹配置：
 
 ~~~yaml
 folders:
-    - map: ~/Code
-      to: /home/vagrant/Code
-      type: nfs
+  - map: ~/Projects
+    to: /home/vagrant/Projects
+    type: nfs
 ~~~
 
 <h1 id="sites-config">Nginx 网站配置</h1>
@@ -309,19 +309,51 @@ databases:
 
 db: 数据库容器, 默认mysql.
 
-<h1 id="ssh">SSH连接</h1>
+<h1 id="ssh">SSH连接/管理虚拟环境</h1>
 
+#### 链接 SSH
 Centstead 已经默认将主机的 2222 端口映射到 虚拟主机的 22 端口,
+所以你可以 ssh://vagrant:vagrant@127.0.0.1:2222 链接虚拟环境
 
-并且添加了 用户名：vagrant 密码: vagrant 权限与 root 相同的 linux 用户，
+#### Vagrant 用户
+Centstead 默认添加了 用户名：vagrant 密码: vagrant 权限与 root 相同的 linux 用户，
 
 故此可以通过 vagrant 用户连接 localhost:2222 管理虚拟机.
 
-另外: 如果你 配置了 `authorize:` 类似如下
+另外由于 vagrant 具有完全的 sudo 权限, 如果你需要执行一个 root 权限的操作, 可以参考如下
+
+~~~bash
+sudo yum install php-yar
+~~~
+
+#### 切换到 root 用户
+
+1. 你可以使用 vagrant 用户登录, 输入 `su -` 密码 vagrant 切换到 root 用户。
+2. Centstead 默认修改内置的 root 用户密码为 vagrant, 可以直接使用 root 用户连接。
+
+#### 公钥认证
+
+如果你 配置了 `authorize:` 类似如下
 ~~~yaml
 authorize: ~/.ssh/id_rsa.pub
 ~~~
-则可以通过公钥认证链接虚拟机.
+则可以通过公钥认证, 以vagruant 用户的,链接到虚拟机, 这一配置默认是开启的。
+
+#### 私钥导入虚拟环境
+
+大多数情况我们的开发工作, 会是在 实机环境,
+
+但是偶尔还是会在虚拟环境执行一些, github 或者 gitlab 的 pull/push 操作.
+
+为虚拟机单独生成并导入一个秘钥？ NO
+
+配置 `keys:` 就好了, 示例
+~~~yaml
+keys:
+  - ~/.ssh/id_rsa
+~~~
+
+Centstead 就会将指定的私钥文件导入到虚拟环境。
 
 <h1 id="customize">自定义虚拟环境</h1>
 
