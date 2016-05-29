@@ -93,7 +93,7 @@ git clone https://github.com/jason-chang/centstead.git centstead
 
 centstead.yaml 配置文件文件将创建于 config 目录.
 
-centstead.yaml 是 centstead 主配置文件，几乎所有常用的变更都是通过修改centstead.yaml实现. 文件格式上它遵循 [yaml](https://zh.wikipedia.org/wiki/YAML) 标准.
+centstead.yaml 是 centstead 主配置文件，几乎所有常用的变更都是通过修改 centstead.yaml 实现. 文件格式上它遵循 [yaml](https://zh.wikipedia.org/wiki/YAML) 标准.
 
 至此使用 `centstead` 的脚手架工作都完成了, 再 **[配置共享文件夹](#share-folder)** 、 **[设置 nginx 站点](#sites-config)** 后就可以享受 centstead 的福利了.
 
@@ -385,38 +385,41 @@ Vagrant 一个环境部署的脚手架工具, 在实际的应用中, 它可以�
 vagrant up
 ~~~
 
-	初始化并且启动一个虚拟环境( 初次执行 up 操作时会执行 provision 操作，以后将不再执行。 )
+初始化并且启动一个虚拟环境( 初次执行 up 操作时会执行 provision 操作，以后将不再执行。 )
     
 ~~~bash
 vagrant halt
 ~~~
 
-	关闭虚拟环境
+关闭虚拟环境
 
 ~~~bash
 vagrant provision
 ~~~
 
-	对虚拟环境重新执行初始化操作, 
-    centstead 的 创建nginx 站点，定制环境软件，共享文件夹， 拷贝文件， 自定义虚拟环境， 计划任务创建都是在这一层执行. 所以如果对上述内容修改以后都要执行 vagrant provision 应用更改.
+对虚拟环境重新执行初始化操作.
+
+Centstead 的 "创建nginx 站点"，"定制环境软件"，"共享文件夹"， "拷贝文件"， "自定义虚拟环境"， "计划任务创建"都是在这一层执行.
+
+所以如果对上述内容修改以后都要执行 `vagrant provision` 应用更改.
     
 ~~~bash
 vagrant suspend
 ~~~
 
-	暂停虚拟环境
+暂停虚拟环境
     
 ~~~bash
 vagrant resume
 ~~~
 
-    恢复虚拟环境
+恢复虚拟环境
     
 ~~~bash
 vagtant destroy
 ~~~
 
-	摧毁虚拟环境
+摧毁虚拟环境
     
 ##### 更多内容请看 官方文档
 	
@@ -429,6 +432,10 @@ vagtant destroy
 `vagrant provision` 前请注意由于GFW的原因,初始化过程中可能经常失败,请尽量使用个人ADSL网络,操作前尽量重连ADSL更换IP, 然后默念三声 `日你妹方校长`
 
 (GFW会根据IP计算HTTPS流量,HTTPS流量高后被断链的几率将增大)
+
+在执行 `init.bat` `init.sh` 的过程中, 需要安装部分 vagrant 插件,同样可能会因为 gfw 导致失败. 
+
+执行之前可以 `set http_proxy=http://127.0.0.1:1080/`, 为 cmd 或者 bash 设置一个 http 代*理.
 
 <h1 id="involvement">参与捉虫</h1>
 
