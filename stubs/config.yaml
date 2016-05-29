@@ -29,6 +29,12 @@ folders:
   - map: ~/Projects
     to: /home/vagrant/Projects
 
+# 拷贝文件到虚拟机
+copy:
+  - from: ~/copy.demo
+    to: /home/vagrant/copy.demo
+
+
 # 站点映射
 sites:
   - conf: demo.app

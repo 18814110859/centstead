@@ -191,11 +191,14 @@ sites:
 
 默认情况下，每个站点都可以通过 HTTP（端口号：8000）和 HTTPS（端口号：44300）进行访问。
 
-配置完成后,执行 `vagrant up` 就可以通过浏览器调试指定的网站了.
+配置完成后, 执行 `vagrant up` 就可以通过浏览器调试指定的网站了.
+如果是已经启动过的环境请执行 `vagrant provision` 应用新的站点配置.
 
 <h1 id="environment-soft">定制环境软件</h1>
 
 为了更加贴近实际的生产环境我们往往需要配置特定的 php , mysql, postgre 版本. centstead 则为此提供了非常简便的配置支持.
+
+编辑 `centstead.yaml` 后别玩忘了执行 `vagrant provision`.
 
 #### PHP版本切换
 
@@ -249,6 +252,17 @@ Centstead 已经默认将主机的 54320 端口映射到 虚拟主机的 5432 �
 故此可以通过 vagrant 用户连接 localhost:54320 管理虚拟机 PostgreSql 数据库.
 
 <h1 id="copy-file">文件拷贝</h1>
+
+初始化过程中我们可能需要将部分文件拷贝到虚拟环境, 配置可以参考如下
+
+~~~yaml
+# 拷贝文件到虚拟机
+copy:
+  - from: ~/copy.demo
+    to: /home/vagrant/copy.demo
+~~~
+
+提示: 拷贝文件支持 目录和文件, 但是不支持覆盖, 如果要同步修改, 请使用共享文件夹配置.
 
 <h1 id="schedule">计划任务</h1>
 
@@ -318,6 +332,8 @@ yum install php-yar
 <h1>附录</h1>
 
 <h1 id="vagrant">Vagrant 介绍</h1>
+
+
 
 <h1 id="teamwork">团队配合</h1>
 
