@@ -371,6 +371,7 @@ Centstead 为这种需求提供了一个钩子文件,就是 centstead.yaml 同�
 
 # 安装 yar 插件
 yum install php-yar
+systemctl restart php-fpm.service
 ~~~
 
 <h1>附录</h1>
