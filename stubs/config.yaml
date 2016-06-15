@@ -3,7 +3,7 @@ ip: "192.168.10.10"
 memory: 2048
 cpus: 1
 provider: virtualbox
-box: jason-chang/centstead-box
+box: jason-chang/centstead-usual
 
 # Provison 时是否重新部署 软件环境
 provison_soft: true

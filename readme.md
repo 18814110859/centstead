@@ -60,22 +60,33 @@ Centstead 就是一个高度定制的 CentOS + php 盒子, 你可以通过 Cents
 在使用 Centstead 之前，需要先安装 [Virtual Box](https://www.virtualbox.org/wiki/Downloads) 和 [Vagrant](https://www.vagrantup.com/downloads.html), 它们都提供 windows, mac ,linux 系统的安装程序。
 
 ##### 安装 Centstead Vagrant 盒子
+
+###### 从 Vagrant 官方镜像安装
+
 [VirtualBox](https://www.virtualbox.org/wiki/Downloads) 和 [Vagrant](https://www.vagrantup.com/downloads.html) 安装好了之后, 接着下载 Centstead 盒子, Centstead 默认提供了两个版本的盒子,供自行选择 :
 
 1. 先锋版 virtualbox_avant.box ,预制 php 7.0 mysql 5.7
 2. 通用版 virtualbox_usual.box ,预制 php 5.6 mysql 5.6
 
-下载地址: (感谢GFW, 我没能将盒子上传到官方仓库).
+命令:
+~~~bash
+vagrant box add jason-chang/centstead-avant
+或者
+vagrant box add jason-chang/centstead-usual
+~~~
+
+###### 从网盘下载安装
+
+下载地址: 
 
 1. **[百度网盘](http://pan.baidu.com/s/1c15ybAS)**
-2. **[360云盘](https://yunpan.cn/cSerL4tXNhrBV#7766)** 提取码：7766
 
 下载完成后, `cd` 到 `.box` 所在目录, 将 box 添加到 Vagrant 环境.
 ~~~bash
 cd downlods/path
-vagrant box add ./virtualbox_avant.box --name=jason-chang/centstead
+vagrant box add ./avant.box --name=jason-chang/centstead-avant
 或者
-vagrant box add ./virtualbox_usual.box --name=jason-chang/centstead
+vagrant box add ./usual.box --name=jason-chang/centstead-usual
 ~~~
 
 #####通过 GitHub 克隆 Centstead
@@ -96,7 +107,8 @@ centstead.yaml 配置文件文件将创建于 config 目录.
 
 centstead.yaml 是 centstead 主配置文件，几乎所有常用的变更都是通过修改 centstead.yaml 实现. 文件格式上它遵循 [yaml](https://zh.wikipedia.org/wiki/YAML) 标准.
 
-至此使用 `centstead` 的脚手架工作都完成了, 再 **[配置共享文件夹](#share-folder)** 、 **[设置 nginx 站点](#sites-config)** 后就可以享受 centstead 的福利了.
+至此使用 `centstead` 的脚手架工作都完成了, 
+然后根据盒子版本在**[基础配置](#base-config)** 设置 `box` 字段 , **[配置共享文件夹](#share-folder)** , **[设置 nginx 站点](#sites-config)** 后就可以享受 centstead 的福利了.
 
 http://demo.app
 
@@ -137,7 +149,7 @@ provider: virtualbox
 基础盒子名称
 
 ~~~yaml
-box: jason-chang/centstead-box
+box: jason-chang/centstead-usual
 ~~~
 
 <h1 id="share-folder">共享文件夹</h1>

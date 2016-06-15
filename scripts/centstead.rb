@@ -18,7 +18,7 @@ class Centstead
     # Configure The Box / 配置 基础盒子
     config.vm.box = settings["box"] ||= "jason-chang/centstead-box"
 
-    #config.vm.box_version = settings["version"] ||= ">= 0.4.0"
+    config.vm.box_version = settings["version"] ||= ">= 1.1.1"
     config.vm.hostname = settings["hostname"] ||= "Centstead"
 
     # A private dhcp network is required for NFS to work (on Windows hosts, at least)
