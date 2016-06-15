@@ -22,6 +22,7 @@ systemctl start postgresql-9.5.service
 
 # 配置 Postgres 远程访问
 sed -i "/#listen_addresses/alisten_addresses = '*'" /var/lib/pgsql/9.5/data/postgresql.conf
+sed -i "/local.*all.*all.*peer/s/peer/trust/" /var/lib/pgsql/9.5/data/pg_hba.conf
 echo "host    all             all             10.0.2.2/32               md5" | tee -a /var/lib/pgsql/9.5/data/pg_hba.conf
 sudo -i -u postgres psql -c "CREATE ROLE vagrant LOGIN UNENCRYPTED PASSWORD 'vagrant' SUPERUSER INHERIT NOCREATEDB NOCREATEROLE NOREPLICATION;"
 

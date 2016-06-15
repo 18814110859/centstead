@@ -208,13 +208,9 @@ class Centstead
         s.args = [conf]
       end
 
-      site["servers"].each do |server|
+      site["servers"].each_with_index do |server, index|
 
-        type = server["type"] ||= "laravel"
-
-        if (server.has_key?("hhvm") && server["hhvm"])
-          type = "hhvm"
-        end
+        type = server["type"] ||= "default"
 
         if (type == "symfony")
           type = "symfony2"
@@ -231,20 +227,19 @@ class Centstead
           aliases.push(server["map"])
         end
 
-        # Configure The Cron Schedule
+        # 创建 laravel 任务调度
         if (server.has_key?("schedule"))
           config.vm.provision "shell" do |s|
-            if (server["schedule"])
-              command = "/usr/bin/php "+ server["to"]+ "/../artisan schedule:run >> /dev/null 2>&1";
-              s.path = scriptDir + "/create-schedule.sh"
-              s.args = ['serve', server["map"], 'vagrant', '* * * * *', command]
-            else
-              s.inline = "rm -f /etc/cron.d/centstead_serve-$1"
-              s.args = [server["map"]]
-            end
+            command = "/usr/bin/php "+ File.dirname(server["to"]) + "/artisan schedule:run >> /dev/null 2>&1";
+            s.path = scriptDir + "/create-schedule.sh"
+            s.args = ['serve', conf + '-' + index.to_s, 'vagrant', '* * * * *', command]
+          end
+        else
+          config.vm.provision "shell" do |s|
+            s.inline = "rm -f /etc/cron.d/centsteadserve-$1"
+            s.args = [conf + '-' + index.to_s]
           end
         end
-
       end
     end
 
@@ -276,7 +271,7 @@ class Centstead
       end
     end
 
-    # Configure The Cron Schedule
+    # 创建计划任务
     config.vm.provision :shell, inline: "rm -rf /etc/cron.d/centstead-*"
 
     if settings.has_key?("schedules") && settings["schedules"]
@@ -285,6 +280,19 @@ class Centstead
           user = schedule['user'] ||= "vagrant"
           s.path = scriptDir + "/create-schedule.sh"
           s.args = ['usual', schedule["name"], user, schedule['interval'], schedule['command']]
+        end
+      end
+    end
+
+    # 创建 laravel 队列监听
+    config.vm.provision :shell, inline: "rm -rf /etc/supervisord.d/centsteadqueue-$1.ini"
+
+    if settings.has_key?("queues") && settings["queues"]
+      settings["queues"].each do |item|
+        queue = item['queue'] ||= 'default'
+        config.vm.provision "shell" do |s|
+          s.path = scriptDir + "/create-supervisor.sh"
+          s.args = [item["name"], item["dir"], item['driver'], queue]
         end
       end
     end

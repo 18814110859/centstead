@@ -11,6 +11,7 @@
 #### [定制环境软件](#environment-soft)
 #### [文件拷贝](#copy-file)
 #### [计划任务](#schedule)
+#### [Laravel 队列监听](#queues)
 #### [数据库自动创建](#create-database)
 #### [SSH连接/管理虚拟环境](#ssh)
 #### [自定义虚拟环境](#customize)
@@ -172,7 +173,14 @@ map: 支持的 域名 server name 多个域名可以空格分隔.
 
 to：指向的项目根入口目录.
 
-type: 站点类型, 支持的配置值: static(静态文件站), proxy (反向代理站), laravel (项目网站), thinkphp (thinkphp网站) , symfony (symfony2网站)
+type: 站点类型, 支持的配置值:
+
+1. 不设置/default(普通php站index.php为入口)
+2. static(静态文件站)
+3. proxy (反向代理站)
+4. laravel (项目网站)
+5. thinkphp (thinkphp网站)
+6. symfony (symfony2网站)
 
 port：http 监听端口
 
@@ -294,6 +302,30 @@ schedules:
     interval: "* 0 */1 * *"
     command: "/usr/bin/redis-cli -h localhost DEL 'some-throttle'"
 ~~~
+
+<h1 id="queues">Laravel 队列监听</h1>
+
+如果你是一名 Laravel 开发者这里提供了 一个便捷的方式创建, Laravel 队列监听。
+
+name: supervisor任务名称
+driver：队列的驱动
+queue: 队列名称
+dir: 项目`artisan`所在目录
+
+示例：
+~~~yaml
+queues:
+  - name: demo.app.mails
+    driver: redis
+    queue: emails
+    dir: /home/vagrant/Code/Demo
+~~~
+
+重要提示：
+	
+由于 vagrant 共享文件夹的挂载晚于 linux supervisor 系统服务, 每次 `vagrant halt` 重启虚拟机后, 可能发现队列监听失效了. 
+请等待共享文件夹挂载完毕后，连入 [SSH](#ssh), 然后执行 `sudo systemctl restart supervisord.service` 重启队列监听.
+然后可以通过 `ps aux | grep artisan` 命令验证队列监听是否在工作。
 
 <h1 id="create-database">数据库自动创建</h1>
 

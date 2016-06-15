@@ -44,8 +44,9 @@ sites:
         type: static
 
       - map: "demo.app *.demo.app"
-        to: /home/vagrant/Projects/Demo
+        to: /home/vagrant/Projects/Demo/public
         aliases: "demo.app a.demo.app u.demo.app www.demo.app"
+        # schedule: true
         # port: 80
         # ssl: 443
 
@@ -55,6 +56,13 @@ schedules:
     user: vagrant
     interval: "* 0 */1 * *"
     command: "/usr/bin/redis-cli -h localhost DEL 'some-throttle'"
+
+# Laravel 队列监听
+#queues:
+#  - name: demo.app.mails
+#    driver: redis
+#    queue: emails
+#    dir: /home/vagrant/Code/Demo
 
 # 创建数据库
 # databases:

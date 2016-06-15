@@ -6,7 +6,7 @@ if [ $1 == 'usual' ]
 then
     PREFIX='centstead-'
 else
-    PREFIX='centstead_serve-'
+    PREFIX='centsteadserve-'
 fi
 
 cron="$4 $3 $5"
