@@ -120,6 +120,13 @@ http://demo.app
 
 为了更好的使用 centstead 请阅读 [Vagrant 介绍](#vagrant)
 
+**推荐: **
+
+同时推荐各位 , 使用支持 windows 和 mac 的 GUI 工具 [vagrant-manager](https://github.com/lanayotech/vagrant-manager) , 管理你的 Vagrant 虚拟机.
+
+1. [windows 版本](https://github.com/lanayotech/vagrant-manager-windows)
+2. [mac 版本](https://github.com/lanayotech/vagrant-manager)
+
 <h1 id="base-config">基础配置</h1>
 
 虚拟机 ip
