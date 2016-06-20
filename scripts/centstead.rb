@@ -16,7 +16,7 @@ class Centstead
     config.ssh.forward_agent = true
 
     # Configure The Box / 配置 基础盒子
-    config.vm.box = settings["box"] ||= "jason-chang/centstead-box"
+    config.vm.box = settings["box"] ||= "jason-chang/centstead-usual"
 
     config.vm.box_version = settings["version"] ||= ">= 1.1.1"
     config.vm.hostname = settings["hostname"] ||= "Centstead"

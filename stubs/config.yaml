@@ -28,40 +28,40 @@ keys:
 
 # 共享文件夹
 folders:
-  - map: ~/Projects
-    to: /home/vagrant/Projects
+  - map: ~/ExampleDir
+    to: /home/vagrant/ExampleDir
 
 # 拷贝文件到虚拟机
-copy:
-  - from: ~/copy.demo
-    to: /home/vagrant/copy.demo
+#copy:
+#  - from: ~/copy.example
+#    to: /home/vagrant/copy.example
 
 
 # 站点映射
 sites:
-  - conf: demo.app
+  - conf: example.app
     servers:
-      - map: static.demo.app
-        to: /home/vagrant/Projects/Demo/static
+      - map: static.example.app
+        to: /home/vagrant/ExampleDir/example/static
         type: static
 
-      - map: "demo.app *.demo.app"
-        to: /home/vagrant/Projects/Demo/public
-        aliases: "demo.app a.demo.app u.demo.app www.demo.app"
+      - map: "example.app *.example.app"
+        to: /home/vagrant/ExampleDir/example/public
+        aliases: "example.app a.example.app u.example.app www.example.app"
         # schedule: true
         # port: 80
         # ssl: 443
 
 # 计划任务
 schedules:
-  - name: redis_demo
+  - name: redis_example
     user: vagrant
     interval: "* 0 */1 * *"
     command: "/usr/bin/redis-cli -h localhost DEL 'some-throttle'"
 
 # Laravel 队列监听
 #queues:
-#  - name: demo.app.mails
+#  - name: example.app.mails
 #    driver: redis
 #    queue: emails
 #    dir: /home/vagrant/Code/Demo

@@ -111,19 +111,23 @@ centstead.yaml 配置文件文件将创建于 config 目录.
 centstead.yaml 是 centstead 主配置文件，几乎所有常用的变更都是通过修改 centstead.yaml 实现. 文件格式上它遵循 [yaml](https://zh.wikipedia.org/wiki/YAML) 标准.
 
 至此使用 `centstead` 的脚手架工作都完成了, 
-然后根据盒子版本在**[基础配置](#base-config)** 设置 `box` 字段 , **[配置共享文件夹](#share-folder)** , **[设置 nginx 站点](#sites-config)** 后就可以享受 centstead 的福利了.
+然后:
+1. 根据盒子版本在**[基础配置](#base-config)** 设置 `box` 字段 和 `version` 字段 ,
+2. 根据你的项目目录 **[配置共享文件夹](#share-folder)** ,
+3. 根据你的项目域名 **[设置 nginx 站点](#sites-config)**,
+4. 启动 Vagrantbox 就可以享受 centstead 的福利了.
 
-http://demo.app
+##### 启动 Vagrant Box
 
-启动 Vagrant Box
+配置好 `config/config.yaml` 文件后, 在 Centstead 目录下运行 `vagrant up` 命令, vagrant 将会启动虚拟机、配置共享文件夹、以及 Nginx 站点(并且写入主机的hosts).
 
-配置好 Centstead.yaml 文件后，在 Centstead 目录下运行 vagrant up 命令，Vagrant 将会启动虚拟机并自动配置共享文件夹以及 Nginx 站点。
+然后,访问你设置的域名开始调试 php 程序吧!
 
 销毁该机器，可以使用 `vagrant destroy`
 
 为了更好的使用 centstead 请阅读 [Vagrant 介绍](#vagrant)
 
-**推荐: **
+**推荐:**
 
 同时推荐各位 , 使用支持 windows 和 mac 的 GUI 工具 [vagrant-manager](https://github.com/lanayotech/vagrant-manager) , 管理你的 Vagrant 虚拟机.
 
@@ -172,6 +176,10 @@ box: jason-chang/centstead-usual
 
 Centstead.yaml 文件中的 folders 属性列出了所有主机和 Centstead 虚拟机共享的文件夹，一旦这些目录中的文件有了修改，将会在本地和 Centstead 虚拟机之间保持同步，如果有需要的话，你可以配置多个共享文件夹（一般一个就够了）：
 
+map: 主机文件目录
+to: 映射到虚拟机的目录
+type: 同步类型: 1.默认为空表示使用 shareFolder. 2. nfs （推荐） 表示使用 [nfs](https://zh.wikipedia.org/wiki/%E7%BD%91%E7%BB%9C%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F) 同步.
+
 ~~~yaml
 folders:
   - map: ~/Projects
@@ -189,18 +197,14 @@ folders:
 
 <h1 id="sites-config">Nginx 网站配置</h1>
 
-对 Nginx 不熟？没问题，通过 sites 属性你可以方便地将“域名”映射到 Centstead 虚拟机的指定目录，Centstead.yaml 中默认已经配置了一个示例站点。和共享文件夹一样，你可以配置多个站点：
-不同于, homestead, Centstead 的站点是基于项目的.
+对 Nginx 不熟？没问题，通过 sites 属性你可以方便地将“域名”映射到 Centstead 虚拟机的指定目录，Centstead.yaml 中默认已经配置了一个示例站点。
+和共享文件夹一样，你也可以配置多个站点：
+（不同于 homestead, Centstead 的站点是基于项目的, 每个项目支持多个子站点）
 
 conf: 项目最终保存成的配置文件
-
 servers: 项目包含的域名 servers
-
-
 map: 支持的 域名 server name 多个域名可以空格分隔.
-
 to：指向的项目根入口目录.
-
 type: 站点类型, 支持的配置值:
 
 1. 不设置/default(普通php站index.php为入口)
@@ -211,16 +215,13 @@ type: 站点类型, 支持的配置值:
 6. symfony (symfony2网站)
 
 port：http 监听端口
-
 ssl: https 监听端口
 
-aliases：
+aliases：所有在 centstead 中配置的站点 centstead 将智能的加入主机的 hosts 文件中, 这样当 vagrant 启动完成的时候后，可以直接浏览配置的域名了。
 
-所有在 centstead 种配置的站点 centstead 将智能的加入主机的 hosts 文件中, 这样当 vagrant 启动完成的时候后，可以直接浏览配置的域名了。
+*centstead 默认取 map 值加入 hosts 文件，但是由于 hosts 文件并不是非常强大, 类似 `**.demo.app` 的泛解析域名将不能支持, `aliases` 就是为此提供的自定义接口, 如果配置存在 `aliases` 则抓取 `aliases` 加入 `hosts` 文件*
 
-centstead 默认取 map 值加入 hosts 文件，但是由于 hosts 文件并不是非常强大, 则 `*.demo.app` 类似的泛解析域名将不能支持, aliases 就是为此提供的自定义接口。
-
-示例: 
+示例:
 
 ~~~yaml
 sites:
@@ -237,16 +238,16 @@ sites:
         # ssl: 443
 ~~~
 
-默认情况下，每个站点都可以通过 HTTP（端口号：8000）和 HTTPS（端口号：44300）进行访问。
+默认情况下，每个站点都可以通过 HTTP（端口号：8000）和 HTTPS（端口号：44300）进行访问.
 
 配置完成后, 执行 `vagrant up` 就可以通过浏览器调试指定的网站了.
 如果是已经启动过的环境请执行 `vagrant provision` 应用新的站点配置.
 
 <h1 id="environment-soft">定制环境软件</h1>
 
-为了更加贴近实际的生产环境我们往往需要配置特定的 php , mysql, postgre 版本. centstead 则为此提供了非常简便的配置支持.
+为了更加贴近实际的生产环境, 我们往往需要配置特定的 php, mysql, postgre 版本. centstead 为此提供了非常简便的配置支持.
 
-编辑 `centstead.yaml` 后别玩忘了执行 `vagrant provision`.
+*编辑 `centstead.yaml` 后别玩忘了执行 `vagrant provision`.*
 
 #### PHP版本切换
 
@@ -373,7 +374,7 @@ db: 数据库容器, 默认mysql.
 
 #### 链接 SSH
 Centstead 已经默认将主机的 2222 端口映射到 虚拟主机的 22 端口,
-所以你可以 ssh://vagrant:vagrant@127.0.0.1:2222 链接虚拟环境
+所以你可以 ssh://vagrant:vagrant@127.0.0.1:2222 连接虚拟环境
 
 #### Vagrant 用户
 Centstead 默认添加了 用户名：vagrant 密码: vagrant 权限与 root 相同的 linux 用户，
