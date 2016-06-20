@@ -89,6 +89,9 @@ vagrant box add ./avant.box --name=jason-chang/centstead-avant
 vagrant box add ./usual.box --name=jason-chang/centstead-usual
 ~~~
 
+然后修改`config/config.yml` 打开 #version: ">=0" 前的注释。
+(因为离线形式安装盒子无法定义版本信息, 如不开启此项, Vagrant校验版本后依然会从官方源下载盒子.)
+
 #####通过 GitHub 克隆 Centstead
 
 box 安装完成后, 克隆 `Centstead` 代码库到任意目录.
@@ -134,7 +137,7 @@ http://demo.app
 ~~~yaml
 ip: "192.168.10.10"
 ~~~
-    
+
 虚拟机内存
 
 ~~~yaml
@@ -157,6 +160,12 @@ provider: virtualbox
 
 ~~~yaml
 box: jason-chang/centstead-usual
+~~~
+
+基础盒子版本, 此项默认关闭/注释, 离线安装盒子的用户请开启。
+
+~~~yaml
+#version: ">=0"
 ~~~
 
 <h1 id="share-folder">共享文件夹</h1>

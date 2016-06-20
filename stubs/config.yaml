@@ -4,6 +4,8 @@ memory: 2048
 cpus: 1
 provider: virtualbox
 box: jason-chang/centstead-usual
+# 基础盒子版本 建议如果离线安装基础盒子再打开本设置
+#version: ">=0"
 
 # Provison 时是否重新部署 软件环境
 provison_soft: true
