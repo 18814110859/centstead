@@ -1,38 +1,18 @@
 # Centstead
 这是一个 PHP 调试环境 , 基于 centos,laravel/homestead.
 
-#文档
-### 目录
-#### [介绍](#introduction)
-#### [开始](#start)
-#### [基础配置](#base-config)
-#### [共享文件夹](#share-folder)
-#### [Nginx 网站配置](#sites-config)
-#### [定制环境软件](#environment-soft)
-#### [文件拷贝](#copy-file)
-#### [计划任务](#schedule)
-#### [Laravel 队列监听](#queues)
-#### [数据库自动创建](#create-database)
-#### [SSH连接/管理虚拟环境](#ssh)
-#### [自定义虚拟环境](#customize)
-### 附录
-#### [Vagrant 介绍/技巧](#vagrant)
-#### [团队配合](#teamwork)
-#### [Fuck GFW](#fuck-gfw)
-#### [参与捉虫](#involvement)
-
-<h1 id="introduction">介绍</h1>
+# 介绍
 
 基于开发的实际需求,PHP开发者通常需要一个贴近生产环境,又易于维护的测试与开发环境.以往的选择:
 
-1. xampp, wamp, phpstudy…… 集成环境, 启动方便,占用小,但是需要往往不能提供 curl,pgsql,imagick ……插件, 自行编译成本很高.
-2. 基于虚拟机手工搭建一个linux环境,然而虚拟机的初始化过程却相当费时费力.
+1. xampp, wamp, phpstudy… 集成环境，启动方便，占用小，但是需要往往不能提供 curl,pgsql,imagick… 插件, 自行编译成本很高。
+2. 基于虚拟机手工搭建一个linux环境，然而虚拟机的初始化过程却相当费时费力。
 
-似乎'易用'与'贴近生产环境',很难平衡. 然而 Vagrant 的到来为我们提供了这种可能. Vagrant 提供了一个便捷的方式来管理和设置虚拟机.
+似乎`易用`与`贴近生产环境`很难平衡。 然而 Vagrant 的到来为我们提供了这种可能. Vagrant 提供了一个便捷的方式来管理和设置虚拟机。
 
-Vagrant 提出了盒子的概念. 一个盒子即是一个初始化过的虚拟系统, 需要的时候可以基于盒子快速生成虚拟机, 出现错误时又可以在几分钟之内快速销毁重建.
+Vagrant 提出了盒子的概念. 一个盒子即是一个初始化过的虚拟系统, 需要的时候可以基于盒子快速生成虚拟机, 出现错误时又可以在几分钟之内快速销毁重建。
 
-Centstead 就是一个高度定制的 CentOS + php 盒子, 你可以通过 Centstead 提供的脚本 与 vagrant 命令方便的管理你的虚拟环境.
+Centstead 就是一个高度定制的 CentOS + php 盒子, 你可以通过 Centstead 提供的脚本 与 vagrant 命令方便的管理你的虚拟环境。
 
 ##### Centstead 预置软件： (可基于配置快速切换版本)
 
@@ -50,6 +30,24 @@ Centstead 就是一个高度定制的 CentOS + php 盒子, 你可以通过 Cents
 + Nodejs (npm webpack gulp bower)
 + memcached
 + Beanstalkd
+
+#文档
+#### [开始](#start)
+#### [基础配置](#base-config)
+#### [共享文件夹](#share-folder)
+#### [Nginx 网站配置](#sites-config)
+#### [定制环境软件](#environment-soft)
+#### [文件拷贝](#copy-file)
+#### [计划任务](#schedule)
+#### [Laravel 队列监听](#queues)
+#### [数据库自动创建](#create-database)
+#### [SSH连接/管理虚拟环境](#ssh)
+#### [自定义虚拟环境](#customize)
+### 附录
+#### [Vagrant 介绍/技巧](#vagrant)
+#### [团队配合](#teamwork)
+#### [Fuck GFW](#fuck-gfw)
+#### [参与捉虫](#involvement)
 
 <h1 id="start">开始</h1>
 
