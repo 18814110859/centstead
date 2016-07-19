@@ -4,7 +4,6 @@ vagrant plugin install vagrant-winnfsd
 vagrant plugin install vagrant-hostmanager
 
 set UserConfigPath=config
-
 mkdir %UserConfigPath%
 
 copy /-y stubs\config.yaml "%UserConfigPath%\\config.yaml"

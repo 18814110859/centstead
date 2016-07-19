@@ -1,2 +1,4 @@
+# Vagrant runtime file
 /.vagrant
+# Centstead user config
 /config
