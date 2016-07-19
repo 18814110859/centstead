@@ -49,20 +49,20 @@
 
 <h1 id="start">开始</h1>
 
-### 安装 & 设置
+## 安装 & 设置
 
-##### 首次安装
+#### 一、 首次安装
 
 　　在使用 Centstead 之前，需要先安装 [Virtual Box](https://www.virtualbox.org/wiki/Downloads) 和 [Vagrant](https://www.vagrantup.com/downloads.html), 它们都提供 windows, mac ,linux 系统的安装程序。
 
-##### 安装 Centstead Vagrant 盒子
+#### 二、安装 Centstead Vagrant 盒子
 
 　　[VirtualBox](https://www.virtualbox.org/wiki/Downloads) 和 [Vagrant](https://www.vagrantup.com/downloads.html) 安装好了之后, 接着下载 Centstead 盒子, Centstead 默认提供了两个版本的盒子,供自行选择 :
 
 1. 先锋版 virtualbox_avant.box ,预制 php 7.0 mysql 5.7
 2. 通用版 virtualbox_usual.box ,预制 php 5.6 mysql 5.6
 
-###### 1. 从 Vagrant 官方镜像安装
+##### 1. 从 Vagrant 官方镜像安装
 
 __命令:__
 
@@ -72,7 +72,7 @@ vagrant box add jason-chang/centstead-avant
 vagrant box add jason-chang/centstead-usual
 ~~~
 
-###### 2. 从网盘下载安装
+##### 2. 从网盘下载安装
 
 下载地址:　__[百度网盘](http://pan.baidu.com/s/1c15ybAS)__
 
@@ -86,10 +86,10 @@ vagrant box add ./usual.box --name=jason-chang/centstead-usual
 ~~~
 __注意__
 
-> 添加完成后修改`config/config.yml`文件，去掉 `#version: ">=0"` 行前的注释`#`。
+> 网盘下载安装盒子的同学，在 [初始化](#init-config) 后一定要修改`config/config.yml`文件，去掉 `#version: ">=0"` 行前的注释`#`。
 > (因为`vagrant`离线形式安装盒子无法定义版本信息，如不开启此项,，`vagrant`校验版本后依然会从官方源下载盒子.)
 
-#####　通过 GitHub 克隆 Centstead
+#### 三、通过 GitHub 克隆 Centstead
 
 box 安装完成后, 克隆 `Centstead` 代码库到任意目录.
 
@@ -97,6 +97,8 @@ box 安装完成后, 克隆 `Centstead` 代码库到任意目录.
 cd some/directory
 git clone https://github.com/jason-chang/centstead.git centstead
 ~~~
+
+<h4 id="init-config"> 四、初始化配置文件 </h4>
 
 克隆完成后,cd 到 `centstead` 目录下 运行 init.sh / init.bat 执行初始化操作.
 
@@ -121,7 +123,7 @@ __提示:__
 3. 根据你的项目域名 **[设置 nginx 站点](#sites-config)**,
 4. 启动 Vagrantbox 就可以享受 centstead 的福利了.
 
-##### 启动 Vagrant Box
+#### 五、启动 Vagrant Box
 
 配置好 `config/config.yaml` 文件后, 在 Centstead 目录下运行 `vagrant up` 命令, vagrant 将会启动虚拟机、配置共享文件夹、以及 Nginx 站点(并且写入主机的hosts).
 
