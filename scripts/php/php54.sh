@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # 检测是否需要安装
-if [ -f /home/vagrant/.env/php56 ]
+if [ -f /home/vagrant/.env/php54 ]
 then
     exit 0
 fi
@@ -13,7 +13,7 @@ sudo /bin/bash /home/vagrant/.remove/php.sh
 yum install -y php php-devel php-fpm php-mysql php-pgsql php-imap php-ldap \
 php-pear php-xml php-mbstring php-mcrypt php-bcmath \
 php-mhash php-redis php-memcached php-xdebug php-curl \
-php-imagick php-gd php-openssl php-readline  --enablerepo=remi
+php-imagick php-gd php-openssl php-readline php-opcache --enablerepo=remi
 
 # 建立 环境标识
 rm -rf /home/vagrant/.env/php*
@@ -30,6 +30,7 @@ sed -i "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/" /etc/php.ini
 sed -i "s/upload_max_filesize = .*/upload_max_filesize = 100M/" /etc/php.ini
 sed -i "s/post_max_size = .*/post_max_size = 100M/" /etc/php.ini
 sed -i "s/;date.timezone.*/date.timezone = Asia\/Shanghai/" /etc/php.ini
+sed -i "s/opcache.enable=1/opcache.enable=0/" /etc/php.d/opcache.ini
 
 # Xdebug设置
 sed -i '$ixdebug.remote_enable = ON' /etc/php.d/xdebug.ini
