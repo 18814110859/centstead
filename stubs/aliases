@@ -1,0 +1,53 @@
+
+alias ..="cd .."
+alias ...="cd ../.."
+
+alias h='cd ~'
+alias c='clear'
+alias art=artisan
+
+alias phpspec='vendor/bin/phpspec'
+alias phpunit='vendor/bin/phpunit'
+alias envoy='vendor/bin/envoy'
+alias serve=serve-laravel
+
+function serve-laravel() {
+    if [[ "$1" && "$2" && "$3" ]]
+    then
+        sudo dos2unix /vagrant/scripts/serve-laravel.sh
+        sudo bash /vagrant/scripts/serve-laravel.sh "$1" "$2" "$3" 80
+    else
+        echo "Error: missing required parameters."
+        echo "Usage: "
+        echo "  serve conf domain path"
+    fi
+}
+
+function serve-proxy() {
+    if [[ "$1" && "$2" && "$3" ]]
+    then
+        sudo dos2unix /vagrant/scripts/serve-proxy.sh
+        sudo bash /vagrant/scripts/serve-proxy.sh "$1" "$2" "$3" 80
+    else
+        echo "Error: missing required parameters."
+        echo "Usage: "
+        echo "  serve-proxy conf domain port"
+    fi
+}
+
+function serve-static() {
+    if [[ "$1" && "$2" && "$3" ]]
+    then
+        sudo dos2unix /vagrant/scripts/serve-proxy.sh
+        sudo bash /vagrant/scripts/serve-proxy.sh "$1" "$2" "$3" 80
+    else
+        echo "Error: missing required parameters."
+        echo "Usage: "
+        echo "  serve-static conf domain port"
+    fi
+}
+
+
+function artisan() {
+    php artisan "$@"
+}

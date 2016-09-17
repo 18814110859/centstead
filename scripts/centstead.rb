@@ -14,6 +14,8 @@ class Centstead
 
     # Allow SSH Agent Forward from The Box
     config.ssh.forward_agent = true
+    config.ssh.insert_key  = false
+	
 
     # Configure The Box / 配置 基础盒子
     config.vm.box = settings["box"] ||= "jason-chang/centstead-usual"
