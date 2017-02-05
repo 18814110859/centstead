@@ -23,7 +23,7 @@ systemctl enable php-fpm.service
 systemctl start php-fpm.service
 
 # 设置 php 配置
-sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php.ini
+sed -i "s/error_reporting =.*/error_reporting = E_ALL \& ~E_NOTICE \& ~E_STRICT \& ~E_DEPRECATED/" /etc/php.ini
 sed -i "s/display_errors = .*/display_errors = On/" /etc/php.ini
 sed -i "s/memory_limit = .*/memory_limit = 512M/" /etc/php.ini
 sed -i "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/" /etc/php.ini

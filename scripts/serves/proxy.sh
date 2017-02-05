@@ -3,6 +3,8 @@
 block="server {
     listen ${3:-80};
     listen ${4:-443} ssl;
+	
+	charset utf-8;
     server_name $1;
 
     location / {
@@ -20,4 +22,4 @@ block="server {
 }
 "
 
-echo "$block" > "/etc/nginx/sites-available/centstead-$1"
+echo "$block" >> "/etc/nginx/sites-available/centstead-$1.conf"

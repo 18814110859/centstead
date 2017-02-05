@@ -10,6 +10,10 @@ block="server {
 
     charset utf-8;
 
+    location / {
+		try_files \$uri \$uri/ /index.php?\$args;
+    }
+
     location = /favicon.ico { access_log off; log_not_found off; }
     location = /robots.txt  { access_log off; log_not_found off; }
 

@@ -6,7 +6,9 @@ block="server {
     autoindex on;
     server_name $2;
     root \"$3\";
-
+	
+	charset utf-8;
+	
     add_header 		Access-Control-Allow-Origin *;
 
     ssl_certificate     /etc/nginx/ssl/$1.crt;
@@ -14,4 +16,4 @@ block="server {
 }
 "
 
-echo "$block" >> "/etc/nginx/sites/centstead-$1"
+echo "$block" >> "/etc/nginx/sites/centstead-$1.conf"
